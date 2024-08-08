@@ -66,9 +66,14 @@ namespace Tensile
                         return e1.key < e2.key || (e1.key == e2.key && e1.speed > e2.speed);
                     };
                     std::sort(table.table.begin(), table.table.end(), comp);
+                    
+                    //Need to figure out why the lines below print the following yet still complain about constructor. HostLibraryTests are not interested in grid for now
+                    // Tensile::Matching::KEntry<std::shared_ptr<Tensile::SolutionLibrary<Tensile::ContractionProblemGemm, Tensile::ContractionSolution>>>
+                                            //   std::shared_ptr<Tensile::SolutionLibrary<Tensile::ContractionProblemGemm, Tensile::ContractionSolution>>
 
                     if constexpr(std::is_same<Distance, Matching::GridBasedDistance<Key>>{})
                     {
+                        std::cout<<"Mapping is grid based"<<std::endl;
                         if(Debug::Instance().gridBasedKDTree())
                         {
                             // Creating K map
