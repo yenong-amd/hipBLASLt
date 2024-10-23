@@ -173,8 +173,20 @@ namespace Tensile
                 = [&](Element library) -> std::shared_ptr<MySolution> {
                 return library->findBestSolution(problem, hardware);
             };
-            SolutionVector<MySolution> solutions
-                = table->findTopMatch(problem, transform, numSolutions);
+            bool useDebugSelection = Debug::Instance().enableDebugSelection();
+
+            SolutionVector<MySolution> solutions;
+            if(useDebugSelection)
+            {
+                std::cout << " Debug selection" << std::endl;
+                std::shared_ptr<MySolution> modeledSolution
+                    = table->findModeledSolution(problem, hardware, transform);
+                solutions.push_back(modeledSolution);
+            }
+            else
+            {
+                solutions = table->findTopMatch(problem, transform, numSolutions);
+            }
 
             if(Debug::Instance().printLibraryLogicIndex())
             {

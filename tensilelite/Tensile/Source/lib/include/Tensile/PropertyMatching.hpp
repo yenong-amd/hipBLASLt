@@ -96,6 +96,10 @@ namespace Tensile
             virtual std::vector<ReturnValue>
                 findTopMatch(Object const& object, Transform transform, int numSolutions) const = 0;
 
+            virtual ReturnValue findModeledSolution(Object const&   object,
+                                                    Hardware const& hardware,
+                                                    Transform       transform) const
+                = 0;
             virtual ReturnValue findBestEvaluationSolution(Object const&   object,
                                                            Hardware const& hardware,
                                                            Transform       transform) const
@@ -365,6 +369,24 @@ namespace Tensile
                     numSolutions);
             }
 
+            virtual ReturnValue findModeledSolution(Object const&   object,
+                                                    Hardware const& hardware,
+                                                    Transform       transform) const override
+            {
+                double bestScore = std::numeric_limits<double>::max();
+                auto   iter      = this->table.begin();
+                if(iter == this->table.end())
+                    return this->nullValue;
+                ReturnValue theMatch = transform(iter->value);
+
+                ReturnValue bestMatch = theMatch;
+                // Iterate through the solutions to find best ranking solution
+                // if(theMatch != nullptr)
+                // {
+                //                 }
+                return bestMatch;
+            }
+
             virtual ReturnValue findBestEvaluationSolution(Object const&   object,
                                                            Hardware const& hardware,
                                                            Transform       transform) const override
@@ -499,7 +521,7 @@ namespace Tensile
 
             ReturnValue nullValue;
 
-            mutable KDTree<int32_t, 2>                                  kdTree;
+            mutable KDTree<int32_t, 2>                                   kdTree;
             std::map<std::tuple<int32_t, int32_t>, std::vector<KBEntry>> kSolutionMap;
         };
 
