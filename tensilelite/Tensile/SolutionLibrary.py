@@ -218,6 +218,31 @@ class DecisionTreeLibrary:
         self.trees = trees
         self.nullValue = nullValue
 
+class RegressionTreeLibrary:
+    Tag = "RegressionTree"
+    StateKeys = [("type", "tag"), "features", "trees"]
+
+    @classmethod
+    def FromOriginalState(cls, d, solutions):
+        features = d["features"]
+        trees = d["trees"]
+        return cls(features, trees)
+
+    @property
+    def tag(self):
+        return self.__class__.Tag
+    
+    def merge(self, other):
+        raise RuntimeError(
+            "RegressionTreeLibrary does not support merging."
+        )
+
+    def remapSolutionIndices(self, indexMap):
+        pass
+
+    def __init__(self, features, trees):
+        self.features = features
+        self.trees = trees
 
 class ProblemMapLibrary:
     Tag = "ProblemMap"
@@ -393,6 +418,12 @@ class MasterSolutionLibrary:
 
                     treeLib = DecisionTreeLibrary.FromOriginalState(lib, solutions)
                     library.rows.append({"predicate": predicate, "library": treeLib})
+            elif d["LibraryType"] == "RegressionTree":
+                predicate = Properties.Predicate(tag="TruePred")
+
+                regressionLib = RegressionTreeLibrary.FromOriginalState(d["Library"], solutions)
+                library = PredicateLibrary(tag="Problem")
+                library.rows.append({"predicate": predicate, "library": regressionLib})
             else:
                 assert 0 and "Unrecognized LibraryType."
 
