@@ -67,9 +67,7 @@ namespace Tensile
         template <typename MyProblem, typename MySolution, typename IO>
         struct MappingTraits<RegressionTreeLibrary<MyProblem, MySolution>, IO>
         {
-            using Library  = RegressionTreeLibrary<MyProblem, MySolution>;
-            using Features = typename Library::Features;
-
+            using Library = RegressionTreeLibrary<MyProblem, MySolution>;
             using iot = IOTraits<IO>;
 
             static void mapping(IO& io, Library& lib)
@@ -81,7 +79,7 @@ namespace Tensile
                                   "RegressionTreeLibrary requires that context be "
                                   "set to a SolutionMap.");
                 }
-
+                std::cout << "Serializing RegressionTree" << std::endl;
                 std::vector<int> mappingIndices;
                 if(iot::outputting(io))
                 {
@@ -117,34 +115,47 @@ namespace Tensile
                         }
                     }
                 }
+                for(auto const& sol : lib.solutions)
+                {
+                    std::cout << sol.first << ": " << sol.second->name() << std::endl;
+                }
 
-                Features features;
+                using Forest = RegressionTree::BasicForest<std::vector<float>, float>;
+                std::shared_ptr<Forest> forest;
                 if(iot::outputting(io))
                 {
-                    features = lib.features;
+                    forest = std::dynamic_pointer_cast<Forest>(lib.forest);
                 }
-                iot::mapRequired(io, "features", features);
-
-                bool success = false;
-                if(features.size() == 0)
-                    iot::setError(io, "Regression Trees must have 15 features.");
                 else
-                    success = mappingKey<std::array<float, 15>>(io, lib, features);
+                {
+                    forest     = std::make_shared<Forest>();
+                    lib.forest = forest;
+                }
+                MappingTraits<Forest, IO>::mapping(io, *forest);
 
-                if(!success)
-                    success = mappingKey<std::vector<float>>(io, lib, features);
-
-                if(!success)
-                    iot::setError(io, "Can't write out key: wrong type.");
+                using SolutionFeatures
+                    = std::vector<std::shared_ptr<MLFeatures::MLFeature<MySolution>>>;
+                SolutionFeatures solFeatures;
+                if(iot::outputting(io))
+                {
+                    solFeatures = lib.solFeatures;
+                }
+                iot::mapOptional(io, "solutionFeatures", solFeatures);
+                lib.solFeatures = solFeatures;
+                for(auto const& feature : solFeatures)
+                    std::cout << "solution features " << feature << std::endl;
+                using ProblemFeatures
+                    = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
+                ProblemFeatures probFeatures;
+                if(iot::outputting(io))
+                {
+                    probFeatures = lib.probFeatures;
+                }
+                iot::mapOptional(io, "problemFeatures", probFeatures);
+                lib.probFeatures = probFeatures;
+                for(auto const& feature : probFeatures)
+                    std::cout << "problem features " << feature << std::endl;
             }
-
-            template <typename Key>
-            static bool mappingKey(IO& io, Library& lib, Features const& features)
-            {
-                lib.features = features;
-                return true;
-            }
-
             const static bool flow = false;
         };
 

@@ -93,10 +93,41 @@ namespace Tensile
                 return SubclassMap({Base::template Pair<MLFeatures::FreeSizeA>(),
                                     Base::template Pair<MLFeatures::FreeSizeB>(),
                                     Base::template Pair<MLFeatures::BoundSize>(),
+                                    Base::template Pair<MLFeatures::BatchSize>(),
                                     Base::template Pair<MLFeatures::Tile0Granularity>(),
                                     Base::template Pair<MLFeatures::Tile1Granularity>(),
                                     Base::template Pair<MLFeatures::CUGranularity>(),
                                     Base::template Pair<MLFeatures::WavesPerSIMD>()});
+            }
+        };
+
+        // Set Flow
+        template <typename IO>
+        struct MappingTraits<std::shared_ptr<MLFeatures::MLFeature<ContractionSolution>>, IO>
+            : public BaseClassMappingTraits<MLFeatures::MLFeature<ContractionSolution>, IO, true>
+        {
+        };
+
+        template <typename IO>
+        struct SubclassMappingTraits<MLFeatures::MLFeature<ContractionSolution>, IO>
+            : public DefaultSubclassMappingTraits<
+                  SubclassMappingTraits<MLFeatures::MLFeature<ContractionSolution>, IO>,
+                  MLFeatures::MLFeature<ContractionSolution>,
+                  IO>
+        {
+            using Self = SubclassMappingTraits<MLFeatures::MLFeature<ContractionSolution>, IO>;
+            using Base = DefaultSubclassMappingTraits<
+                SubclassMappingTraits<MLFeatures::MLFeature<ContractionSolution>, IO>,
+                MLFeatures::MLFeature<ContractionSolution>,
+                IO>;
+            using SubclassMap = typename Base::SubclassMap;
+            const static SubclassMap subclasses;
+
+            static typename Base::SubclassMap GetSubclasses()
+            {
+                return SubclassMap({Base::template Pair<MLFeatures::MacroTile0>(),
+                                    Base::template Pair<MLFeatures::MacroTile1>(),
+                                    Base::template Pair<MLFeatures::DepthU>()});
             }
         };
 
@@ -108,6 +139,15 @@ namespace Tensile
         const typename ContractionProblemFeatureSMT<IO>::SubclassMap
             ContractionProblemFeatureSMT<IO>::subclasses
             = ContractionProblemFeatureSMT<IO>::GetSubclasses();
+
+        template <typename IO>
+        using ContractionSolutionFeatureSMT
+            = SubclassMappingTraits<MLFeatures::MLFeature<ContractionSolution>, IO>;
+
+        template <typename IO>
+        const typename ContractionSolutionFeatureSMT<IO>::SubclassMap
+            ContractionSolutionFeatureSMT<IO>::subclasses
+            = ContractionSolutionFeatureSMT<IO>::GetSubclasses();
 
         template <typename IO>
         struct MappingTraits<MLFeatures::FreeSizeA, IO>
@@ -124,6 +164,12 @@ namespace Tensile
         template <typename IO>
         struct MappingTraits<MLFeatures::BoundSize, IO>
             : public AutoMappingTraits<MLFeatures::BoundSize, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::BatchSize, IO>
+            : public AutoMappingTraits<MLFeatures::BatchSize, IO>
         {
         };
 
@@ -148,6 +194,24 @@ namespace Tensile
         template <typename IO>
         struct MappingTraits<MLFeatures::WavesPerSIMD, IO>
             : public AutoMappingTraits<MLFeatures::WavesPerSIMD, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::MacroTile0, IO>
+            : public AutoMappingTraits<MLFeatures::MacroTile0, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::MacroTile1, IO>
+            : public AutoMappingTraits<MLFeatures::MacroTile1, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::DepthU, IO>
+            : public AutoMappingTraits<MLFeatures::DepthU, IO>
         {
         };
     } // namespace Serialization

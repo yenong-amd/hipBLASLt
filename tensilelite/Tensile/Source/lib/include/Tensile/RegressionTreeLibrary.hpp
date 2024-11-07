@@ -47,12 +47,14 @@ namespace Tensile
     template <typename MyProblem, typename MySolution = typename MyProblem::Solution>
     struct RegressionTreeLibrary : public SolutionLibrary<MyProblem, MySolution>
     {
-        using Forest   = RegressionTree::Forest<std::array<float, 15>, float>;
-        using Features = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
+        using Forest           = RegressionTree::Forest<std::vector<float>, float>;
+        using SolutionFeatures = std::vector<std::shared_ptr<MLFeatures::MLFeature<MySolution>>>;
+        using ProblemFeatures  = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
 
         std::map<int, std::shared_ptr<MySolution>> solutions;
         std::shared_ptr<Forest>                    forest;
-        Features                                   features;
+        SolutionFeatures                           solFeatures;
+        ProblemFeatures                            probFeatures;
 
         static std::string Type()
         {

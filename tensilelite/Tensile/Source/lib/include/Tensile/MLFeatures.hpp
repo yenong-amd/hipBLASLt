@@ -146,6 +146,26 @@ namespace Tensile
             }
         };
 
+        struct BatchSize : public MLFeature_CRTP<BatchSize, ContractionProblemGemm>
+        {
+            enum
+            {
+                HasIndex = true,
+                HasValue = false
+            };
+            size_t index;
+
+            static std::string Type()
+            {
+                return "BatchSize";
+            }
+
+            virtual float operator()(ContractionProblemGemm const& problem) const
+            {
+                return (float)problem.batchSize(index);
+            }
+        };
+
         struct Tile0Granularity : public MLFeature_CRTP<Tile0Granularity, ContractionProblemGemm>
         {
             enum
@@ -230,6 +250,62 @@ namespace Tensile
             }
         };
 
+        struct MacroTile0 : public MLFeature_CRTP<MacroTile0, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "MacroTile0";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.macroTile.x;
+            }
+        };
+
+        struct MacroTile1 : public MLFeature_CRTP<MacroTile0, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "MacroTile1";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.macroTile.y;
+            }
+        };
+
+        struct DepthU : public MLFeature_CRTP<DepthU, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "DepthU";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.depthU;
+            }
+        };
         /**
          * @}
          */

@@ -82,22 +82,23 @@ ProblemType:
   UseScaleAlphaVec: 0
   UseScaleCD: false
 Library:
-  features:
-  - {type: MacroTile0}
-  - {type: MacroTile1}
-  - {type: DepthU}
-  - {type: 1LDSBuffer}
-  - {type: GlobalReadVectorWidthA}
-  - {type: GlobalReadVectorWidthB}
-  - {type: LocalReadVectorWidth}
-  - {type: NumLoadsCoalescedA}
-  - {type: StoreVectorWidth}
-  - {type: VectorWidthA}
-  - {type: WorkGroupMapping}
-  - {type: FreeSizeA, index: 0}
-  - {type: FreeSizeB, index: 0}
-  - {type: BoundSize, index: 0}
-  - {type: Log10Flops}
+  solutionFeatures:
+    - type: MacroTile0
+    - type: MacroTile1
+    - type: DepthU
+    - type: 1LDSBuffer
+    - type: GlobalReadVectorWidthA
+    - type: GlobalReadVectorWidthB
+    - type: LocalReadVectorWidth
+    - type: NumLoadsCoalescedA
+    - type: StoreVectorWidth
+    - type: VectorWidthA
+    - type: WorkGroupMapping
+  problemFeatures:
+    - {type: FreeSizeA, index: 0}
+    - {type: FreeSizeB, index: 0}
+    - {type: BoundSize, index: 0}
+    - type: Log10Flops
   trees:
   - tree:
     - {featureIdx: 14, threshold: 9.4125, nextIdxLTE: 1.0, nextIdxGT: 25.0}

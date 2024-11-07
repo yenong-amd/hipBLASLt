@@ -220,7 +220,7 @@ class DecisionTreeLibrary:
 
 class RegressionTreeLibrary:
     Tag = "RegressionTree"
-    StateKeys = [("type", "tag"), "table", "features", "trees"]
+    StateKeys = [("type", "tag"), "table", "trees", "solutionFeatures", "problemFeatures"]
 
     @classmethod
     def FromOriginalState(cls, d, solutions):
@@ -236,9 +236,10 @@ class RegressionTreeLibrary:
         except KeyError:
             pass
 
-        features = d["features"]
         trees = d["trees"]
-        return cls(table, features, trees)
+        solution_features = d["solutionFeatures"]
+        problem_features = d["problemFeatures"]
+        return cls(table, trees, solution_features, problem_features)
 
     @property
     def tag(self):
@@ -252,10 +253,11 @@ class RegressionTreeLibrary:
     def remapSolutionIndices(self, indexMap):
         pass
 
-    def __init__(self, table, features, trees):
+    def __init__(self, table, trees, solution_features, problem_features):
         self.table = table
-        self.features = features
         self.trees = trees
+        self.solutionFeatures = solution_features
+        self.problemFeatures = problem_features
 
 class ProblemMapLibrary:
     Tag = "ProblemMap"
