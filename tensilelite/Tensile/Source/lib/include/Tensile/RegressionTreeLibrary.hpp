@@ -26,6 +26,7 @@
 
 #pragma once
 
+#include <queue>
 #include <set>
 #include <vector>
 
@@ -51,7 +52,7 @@ namespace Tensile
         using SolutionFeatures = std::vector<std::shared_ptr<MLFeatures::MLFeature<MySolution>>>;
         using ProblemFeatures  = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
 
-        std::map<int, std::shared_ptr<MySolution>> solutions;
+        std::map<int, std::shared_ptr<MySolution>> solutionmap;
         std::shared_ptr<Forest>                    forest;
         SolutionFeatures                           solFeatures;
         ProblemFeatures                            probFeatures;
@@ -77,12 +78,15 @@ namespace Tensile
                                                                const int index) const override
         {
             const bool experimental = Debug::Instance().useExperimentalSelection();
-            if((!experimental) || (index > solutions.size()) || (index < 0))
+            if(!experimental)
             {
                 // If the experimental library mode is not on treat it like it asserted out
                 return nullptr;
             }
-
+            // ;
+            auto indexMatch = solutionmap.find(index);
+            if(indexMatch != solutionmap.end())
+                return indexMatch->second;
             return nullptr;
         }
 
@@ -91,7 +95,32 @@ namespace Tensile
                                                              double*          fitness
                                                              = nullptr) const override
         {
-            return nullptr;
+            std::vector<float> problemkey
+                = ProblemKey::keyForProblem<std::vector<float>, MyProblem, float>(
+                    problem, this->probFeatures);
+
+            float                       result         = 0.0;
+            float                       bestEfficiency = 0.0;
+            std::shared_ptr<MySolution> bestMatch      = nullptr;
+
+            for(auto const& row : solutionmap)
+            {
+                std::vector<float> solutionkey
+                    = ProblemKey::keyForProblem<std::vector<float>, MySolution, float>(
+                        *row.second, this->solFeatures);
+                std::vector<float> key;
+                key.reserve(solutionkey.size() + problemkey.size());
+                key.insert(key.end(), solutionkey.begin(), solutionkey.end());
+                key.insert(key.end(), problemkey.begin(), problemkey.end());
+                result = forest->computeEfficiency(key);
+
+                if(result > bestEfficiency)
+                {
+                    bestEfficiency = result;
+                    bestMatch      = row.second;
+                }
+            }
+            return bestMatch;
         }
 
         virtual SolutionSet<MySolution>
@@ -102,6 +131,7 @@ namespace Tensile
         {
             if(searchType != SolutionLibrarySearchType::DEFAULT)
             {
+                std::cout << "RTree not default\n";
                 // if the solution library search is not default then return an empty
                 // set of solutions.
                 SolutionSet<MySolution> rv;
@@ -117,7 +147,7 @@ namespace Tensile
                 return rv;
             }
             SolutionSet<MySolution> rv;
-            for(auto const& row : solutions)
+            for(auto const& row : solutionmap)
                 rv.insert(row.second);
 
             return rv;
@@ -127,7 +157,34 @@ namespace Tensile
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            // TODO gather topN in sorted map
+            std::vector<float> problemkey
+                = ProblemKey::keyForProblem<std::vector<float>, MyProblem, float>(
+                    problem, this->probFeatures);
+
+            float                       result         = 0.0;
+            float                       bestEfficiency = 0.0;
+            std::shared_ptr<MySolution> bestMatch      = nullptr;
+
+            for(auto const& row : solutionmap)
+            {
+                std::vector<float> solutionkey
+                    = ProblemKey::keyForProblem<std::vector<float>, MySolution, float>(
+                        *row.second, this->solFeatures);
+                std::vector<float> key;
+                key.reserve(solutionkey.size() + problemkey.size());
+                key.insert(key.end(), solutionkey.begin(), solutionkey.end());
+                key.insert(key.end(), problemkey.begin(), problemkey.end());
+                result = forest->computeEfficiency(key);
+
+                if(result > bestEfficiency)
+                {
+                    bestEfficiency = result;
+                    bestMatch      = row.second;
+                }
+            }
             SolutionVector<MySolution> rv;
+            rv.push_back(bestMatch);
             return rv;
         }
 
@@ -155,7 +212,7 @@ namespace Tensile
             }
 
             SolutionSet<MySolution> rv;
-            for(auto const& row : solutions)
+            for(auto const& row : solutionmap)
                 rv.insert(row.second);
 
             return rv;

@@ -79,13 +79,12 @@ namespace Tensile
                                   "RegressionTreeLibrary requires that context be "
                                   "set to a SolutionMap.");
                 }
-                std::cout << "Serializing RegressionTree" << std::endl;
                 std::vector<int> mappingIndices;
                 if(iot::outputting(io))
                 {
-                    mappingIndices.reserve(lib.solutions.size());
+                    mappingIndices.reserve(lib.solutionmap.size());
 
-                    for(auto const& pair : lib.solutions)
+                    for(auto const& pair : lib.solutionmap)
                         mappingIndices.push_back(pair.first);
 
                     iot::mapRequired(io, "table", mappingIndices);
@@ -111,13 +110,9 @@ namespace Tensile
                         else
                         {
                             auto solution = slnIter->second;
-                            lib.solutions.insert(std::make_pair(index, solution));
+                            lib.solutionmap.insert(std::make_pair(index, solution));
                         }
                     }
-                }
-                for(auto const& sol : lib.solutions)
-                {
-                    std::cout << sol.first << ": " << sol.second->name() << std::endl;
                 }
 
                 using Forest = RegressionTree::BasicForest<std::vector<float>, float>;
@@ -142,8 +137,7 @@ namespace Tensile
                 }
                 iot::mapOptional(io, "solutionFeatures", solFeatures);
                 lib.solFeatures = solFeatures;
-                for(auto const& feature : solFeatures)
-                    std::cout << "solution features " << feature << std::endl;
+
                 using ProblemFeatures
                     = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
                 ProblemFeatures probFeatures;
@@ -153,8 +147,6 @@ namespace Tensile
                 }
                 iot::mapOptional(io, "problemFeatures", probFeatures);
                 lib.probFeatures = probFeatures;
-                for(auto const& feature : probFeatures)
-                    std::cout << "problem features " << feature << std::endl;
             }
             const static bool flow = false;
         };

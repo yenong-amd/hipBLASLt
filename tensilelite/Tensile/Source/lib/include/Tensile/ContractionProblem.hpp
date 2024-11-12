@@ -1102,6 +1102,8 @@ namespace Tensile
             return m_arithmeticIntensity;
         }
 
+        float getLog10Flops() const;
+
         virtual std::vector<ConstantDescriptor> const constants() const
         {
             std::vector<ConstantDescriptor> c = {{"alpha", m_alphaType}, {"beta", m_betaType}};
