@@ -5,7 +5,6 @@ Fp16AltImpl: false
 ScheduleName: aquavanjaram
 ArchitectureName: gfx942
 DeviceNames: [Device 0049, Device 0050]
-CUCount: 304
 ProblemType:
   Activation: false
   ActivationComputeDataType: 0
