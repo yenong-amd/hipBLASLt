@@ -384,6 +384,25 @@ namespace TensileLite
             }
         };
 
+        struct GlobalWriteVW : public MLFeature_CRTP<GlobalWriteVW, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "GlobalWriteVectorWidth";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.globalWriteVectorWidth;
+            }
+        };
+
         struct LocalReadVW : public MLFeature_CRTP<LocalReadVW, ContractionSolution>
         {
             enum
@@ -400,6 +419,26 @@ namespace TensileLite
             virtual float operator()(ContractionSolution const& solution) const
             {
                 return (float)solution.sizeMapping.localReadVectorWidth;
+            }
+        };
+
+        struct NumElementsPerThread
+            : public MLFeature_CRTP<NumElementsPerThread, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "NumElementsPerThread";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.numElementsPerThread;
             }
         };
 
@@ -422,6 +461,101 @@ namespace TensileLite
             }
         };
 
+        struct NumLoadsA : public MLFeature_CRTP<NumLoadsA, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "NumLoadsA";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.numLoadsA;
+            }
+        };
+
+        struct NumLoadsB : public MLFeature_CRTP<NumLoadsB, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "NumLoadsB";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.numLoadsB;
+            }
+        };
+
+        struct NumLoadsPerpA : public MLFeature_CRTP<NumLoadsPerpA, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "NumLoadsPerpA";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.numLoadsPerpA;
+            }
+        };
+
+        struct NumLoadsPerpB : public MLFeature_CRTP<NumLoadsPerpB, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "NumLoadsPerpB";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.numLoadsPerpB;
+            }
+        };
+
+        struct PrefetchLocalRead : public MLFeature_CRTP<PrefetchLocalRead, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "PrefetchLocalRead";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.prefetchLocalRead;
+            }
+        };
+
         struct StoreVW : public MLFeature_CRTP<StoreVW, ContractionSolution>
         {
             enum
@@ -441,6 +575,25 @@ namespace TensileLite
             }
         };
 
+        struct StreamKXCCMapping : public MLFeature_CRTP<StreamKXCCMapping, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "StreamKXCCMapping";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.streamKXCCMapping;
+            }
+        };
+
         struct VectorWidthA : public MLFeature_CRTP<VectorWidthA, ContractionSolution>
         {
             enum
@@ -457,6 +610,25 @@ namespace TensileLite
             virtual float operator()(ContractionSolution const& solution) const
             {
                 return (float)solution.sizeMapping.vectorWidthA;
+            }
+        };
+
+        struct VectorWidthB : public MLFeature_CRTP<VectorWidthB, ContractionSolution>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false,
+            };
+
+            static std::string Type()
+            {
+                return "VectorWidthB";
+            }
+
+            virtual float operator()(ContractionSolution const& solution) const
+            {
+                return (float)solution.sizeMapping.vectorWidthB;
             }
         };
 

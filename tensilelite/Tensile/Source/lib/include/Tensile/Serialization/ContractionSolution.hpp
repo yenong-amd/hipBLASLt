@@ -126,9 +126,17 @@ namespace TensileLite
                 iot::mapRequired(io, "localReadVectorWidth", s.localReadVectorWidth);
                 iot::mapRequired(io, "numLoadsCoalescedA", s.numLoadsCoalescedA);
                 iot::mapRequired(io, "storeVectorWidth", s.storeVectorWidth);
+                iot::mapRequired(io, "globalWriteVectorWidth", s.globalWriteVectorWidth);
+                iot::mapRequired(io, "numElementsPerThread", s.numElementsPerThread);
+                iot::mapRequired(io, "numLoadsA", s.numLoadsA);
+                iot::mapRequired(io, "numLoadsB", s.numLoadsB);
+                iot::mapRequired(io, "numLoadsPerpA", s.numLoadsPerpA);
+                iot::mapRequired(io, "numLoadsPerpB", s.numLoadsPerpB);
+                iot::mapRequired(io, "prefetchLocalRead", s.prefetchLocalRead);
+                iot::mapOptional(io, "streamKXCCMapping", s.streamKXCCMapping);
                 iot::mapRequired(io, "vectorWidthA", s.vectorWidthA);
+                iot::mapRequired(io, "vectorWidthB", s.vectorWidthB);
             }
-
             const static bool flow = false;
         };
 

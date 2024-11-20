@@ -154,7 +154,16 @@ namespace TensileLite
         size_t localReadVectorWidth = 1;
         size_t numLoadsCoalescedA   = 1;
         size_t storeVectorWidth     = 1;
-        size_t vectorWidthA         = 1;
+        size_t globalWriteVectorWidth = 1;
+        size_t numElementsPerThread   = 1;
+        size_t numLoadsA              = 1;
+        size_t numLoadsB              = 1;
+        size_t numLoadsPerpA          = 1;
+        size_t numLoadsPerpB          = 1;
+        size_t prefetchLocalRead      = 1;
+        size_t streamKXCCMapping      = 1;
+        size_t vectorWidthA           = 1;
+        size_t vectorWidthB           = 1;
     };
 
     /**

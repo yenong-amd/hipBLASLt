@@ -132,10 +132,19 @@ namespace TensileLite
                                     Base::template Pair<MLFeatures::LdsBuffer>(),
                                     Base::template Pair<MLFeatures::GlobalReadVWA>(),
                                     Base::template Pair<MLFeatures::GlobalReadVWB>(),
+                                    Base::template Pair<MLFeatures::GlobalWriteVW>(),
                                     Base::template Pair<MLFeatures::LocalReadVW>(),
+                                    Base::template Pair<MLFeatures::NumElementsPerThread>(),
+                                    Base::template Pair<MLFeatures::NumLoadsA>(),
+                                    Base::template Pair<MLFeatures::NumLoadsB>(),
                                     Base::template Pair<MLFeatures::NumLoadsCoalescedA>(),
+                                    Base::template Pair<MLFeatures::NumLoadsPerpA>(),
+                                    Base::template Pair<MLFeatures::NumLoadsPerpB>(),
+                                    Base::template Pair<MLFeatures::PrefetchLocalRead>(),
                                     Base::template Pair<MLFeatures::StoreVW>(),
+                                    Base::template Pair<MLFeatures::StreamKXCCMapping>(),
                                     Base::template Pair<MLFeatures::VectorWidthA>(),
+                                    Base::template Pair<MLFeatures::VectorWidthB>(),
                                     Base::template Pair<MLFeatures::WorkGroupMapping>()});
             }
         };
@@ -249,8 +258,20 @@ namespace TensileLite
         };
 
         template <typename IO>
+        struct MappingTraits<MLFeatures::GlobalWriteVW, IO>
+            : public AutoMappingTraits<MLFeatures::GlobalWriteVW, IO>
+        {
+        };
+
+        template <typename IO>
         struct MappingTraits<MLFeatures::LocalReadVW, IO>
             : public AutoMappingTraits<MLFeatures::LocalReadVW, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::NumElementsPerThread, IO>
+            : public AutoMappingTraits<MLFeatures::NumElementsPerThread, IO>
         {
         };
 
@@ -261,14 +282,56 @@ namespace TensileLite
         };
 
         template <typename IO>
+        struct MappingTraits<MLFeatures::NumLoadsA, IO>
+            : public AutoMappingTraits<MLFeatures::NumLoadsA, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::NumLoadsB, IO>
+            : public AutoMappingTraits<MLFeatures::NumLoadsB, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::NumLoadsPerpA, IO>
+            : public AutoMappingTraits<MLFeatures::NumLoadsPerpA, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::NumLoadsPerpB, IO>
+            : public AutoMappingTraits<MLFeatures::NumLoadsPerpB, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::PrefetchLocalRead, IO>
+            : public AutoMappingTraits<MLFeatures::PrefetchLocalRead, IO>
+        {
+        };
+
+        template <typename IO>
         struct MappingTraits<MLFeatures::StoreVW, IO>
             : public AutoMappingTraits<MLFeatures::StoreVW, IO>
         {
         };
 
         template <typename IO>
+        struct MappingTraits<MLFeatures::StreamKXCCMapping, IO>
+            : public AutoMappingTraits<MLFeatures::StreamKXCCMapping, IO>
+        {
+        };
+
+        template <typename IO>
         struct MappingTraits<MLFeatures::VectorWidthA, IO>
             : public AutoMappingTraits<MLFeatures::VectorWidthA, IO>
+        {
+        };
+
+        template <typename IO>
+        struct MappingTraits<MLFeatures::VectorWidthB, IO>
+            : public AutoMappingTraits<MLFeatures::VectorWidthB, IO>
         {
         };
 

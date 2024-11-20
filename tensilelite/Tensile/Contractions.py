@@ -548,8 +548,17 @@ class SizeMapping:
                  'localReadVectorWidth',
                  'numLoadsCoalescedA',
                  'storeVectorWidth',
-                 'vectorWidthA'
-                 ]
+                 'globalWriteVectorWidth', 
+                 'numElementsPerThread',
+                 'numLoadsA',
+                 'numLoadsB',
+                 'numLoadsPerpendicularA',
+                 'numLoadsPerpendicularB',
+                 'prefetchLocalRead',
+                 'streamKXCCMapping',
+                 'vectorWidthA',
+                 'vectorWidthB']
+
 
     @classmethod
     def FromOriginalState(cls, d):
@@ -596,8 +605,16 @@ class SizeMapping:
                    localReadVectorWidth = d['LocalReadVectorWidth'],
                    numLoadsCoalescedA = d['NumLoadsCoalescedA'],
                    storeVectorWidth = d['StoreVectorWidth'],
-                   vectorWidthA = d['VectorWidthA']
-                   )
+                   globalWriteVectorWidth = ['GlobalWriteVectorWidth'], 
+                   numElementsPerThread = ['NumElementsPerThread'],
+                   numLoadsA = ['NumLoadsA'],
+                   numLoadsB = ['NumLoadsB'],
+                   numLoadsPerpA = ['NumLoadsPerpendicularA'],
+                   numLoadsPerpB = ['NumLoadsPerpendicularB'],
+                   prefetchLocalRead = ['PrefetchLocalRead'],
+                   streamKXCCMapping = ['StreamKXCCMapping'],
+                   vectorWidthA = ['VectorWidthA'],
+                   vectorWidthB = ['VectorWidthB'])
 
     @classmethod
     def ReadOriginalMacroTile(cls, d):
