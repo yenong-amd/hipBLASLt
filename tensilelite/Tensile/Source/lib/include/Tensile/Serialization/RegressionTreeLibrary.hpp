@@ -79,6 +79,7 @@ namespace TensileLite
                                   "RegressionTreeLibrary requires that context be "
                                   "set to a SolutionMap.");
                 }
+                // std::cout << "Serializing RegressionTree" << std::endl;
                 std::vector<int> mappingIndices;
                 if(iot::outputting(io))
                 {
@@ -137,7 +138,8 @@ namespace TensileLite
                 }
                 iot::mapOptional(io, "solutionFeatures", solFeatures);
                 lib.solFeatures = solFeatures;
-
+                // for(auto const& feature : solFeatures)
+                //     std::cout << "solution features " << (*feature).toString() << std::endl;
                 using ProblemFeatures
                     = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
                 ProblemFeatures probFeatures;
@@ -147,6 +149,8 @@ namespace TensileLite
                 }
                 iot::mapOptional(io, "problemFeatures", probFeatures);
                 lib.probFeatures = probFeatures;
+                // for(auto const& feature : probFeatures)
+                //     std::cout << "problem features " << (*feature).toString() << std::endl;
             }
             const static bool flow = false;
         };
