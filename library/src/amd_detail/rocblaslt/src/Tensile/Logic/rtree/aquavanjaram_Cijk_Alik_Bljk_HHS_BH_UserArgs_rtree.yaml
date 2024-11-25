@@ -1,6 +1,6 @@
 MinimumRequiredVersion: 4.33.0
 LibraryType: RegressionTree
-PerfMetric: Experimental
+PerfMetric: ExperimentalRTree
 Fp16AltImpl: false
 ScheduleName: aquavanjaram
 ArchitectureName: gfx942
@@ -94,8 +94,8 @@ Library:
   - {type: NumElementsPerThread}
   - {type: NumLoadsA}
   - {type: NumLoadsB}
-  - {type: NumLoadsPerpendicularA}
-  - {type: NumLoadsPerpendicularB}
+  - {type: NumLoadsPerpA}
+  - {type: NumLoadsPerpB}
   - {type: PrefetchLocalRead}
   - {type: StoreVectorWidth}
   - {type: StreamKXCCMapping}
