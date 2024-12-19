@@ -197,6 +197,10 @@ namespace TensileLite
             return kernelName;
         }
 
+        bool isStreamK() const
+        {
+            return sizeMapping.streamK > 0;
+        }
         //! Estimates based on problem size, solution tile, and  machine hardware
         //! charz:
         struct StaticPerformanceModel
