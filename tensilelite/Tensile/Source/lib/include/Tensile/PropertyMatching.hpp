@@ -1426,5 +1426,93 @@ kd_tree_batch_1_again:
                 return bestmatches;
             }
         };
+
+        template <typename Key, typename Object, typename Value, typename ReturnValue>
+        struct DistanceMatchingTable<Key,
+                                     Object,
+                                     Value,
+                                     ReturnValue,
+                                     Matching::IntensityDistance<Key>>
+            : public DistanceMatchingCommon<Key,
+                                            Object,
+                                            Value,
+                                            ReturnValue,
+                                            Matching::IntensityDistance<Key>>
+        {
+            using Base              = MatchingTable<Object, Value, ReturnValue>;
+            using Entry             = MatchingTableEntry<Key, Value>;
+            using Transform         = typename Base::Transform;
+            using Properties        = typename Base::Properties;
+            using IntensityDistance = Matching::IntensityDistance<Key>;
+            using Common            = DistanceMatchingCommon<Key,
+                                                             Object,
+                                                             Value,
+                                                             ReturnValue,
+                                                             Matching::IntensityDistance<Key>>;
+            using Common::distance;
+            using Common::nullValue;
+            using Common::table;
+
+            DistanceMatchingTable(ReturnValue nullValue = ReturnValue())
+                : Common(nullValue)
+            {
+            }
+
+            DistanceMatchingTable(Properties const& properties,
+                                  ReturnValue       nullValue = ReturnValue())
+                : Common(properties, nullValue)
+            {
+            }
+
+            DistanceMatchingTable(IntensityDistance const& distance,
+                                  Properties const&        properties,
+                                  ReturnValue              nullValue = ReturnValue())
+                : Common(distance, properties, nullValue)
+            {
+            }
+
+            std::tuple<ReturnValue, double> findBestKeyMatch(Key const& key,
+                                                             Transform  transform) const
+            {
+                std::vector<ReturnValue> solutions = findTopKeyMatch(key, transform, 1);
+                ReturnValue              solution  = this->nullValue;
+                if(solutions.size() > 0)
+                    solution = solutions[0];
+                return std::make_tuple(solution, std::numeric_limits<double>::max());
+            }
+
+            std::vector<ReturnValue>
+                findTopKeyMatch(Key const& key, Transform transform, int numSolutions) const
+            {
+                if(Debug::Instance().printPropertyEvaluation())
+                    return findBestKeyMatch_Intensity<true>(key, transform, numSolutions);
+                else
+                    return findBestKeyMatch_Intensity<false>(key, transform, numSolutions);
+            }
+
+            template <bool T_Debug>
+            std::vector<ReturnValue> findBestKeyMatch_Intensity(Key const& key_orig,
+                                                                Transform  transform,
+                                                                int        numSolutions) const
+            {
+                std::vector<ReturnValue> bestmatches;
+                if(this->table.empty())
+                {
+                    return bestmatches;
+                }
+                double bestDistance = std::numeric_limits<double>::max();
+                auto   bestMatch    = this->nullValue;
+                std::cout << key_orig[0] << ", " << key_orig[1] << ", " << key_orig[2] << std::endl;
+                if(key_orig.size() > 3)
+                    std::cout << key_orig[3] << std::endl;
+                for(auto iter = table.begin(); iter != table.end(); ++iter)
+                {
+                    std::cout << iter->key[0] << ", " << iter->key[1] << ", " << iter->key[2]
+                              << ", " << iter->key[3] << std::endl;
+                    std::cout << iter->value << ", " << iter->speed << std::endl;
+                }
+                return bestmatches;
+            }
+        };
     } // namespace Matching
 } // namespace TensileLite

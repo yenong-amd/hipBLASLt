@@ -198,6 +198,11 @@ namespace TensileLite
                     success = mappingDistance<Key, Matching::GridBasedDistance<Key>>(
                         io, lib, properties);
                 }
+                else if(distanceType == "Intensity")
+                {
+                    success = mappingDistance<Key, Matching::IntensityDistance<Key>>(
+                        io, lib, properties);
+                }
                 else
                 {
                     iot::setError(io, concatenate("Unknown distance function ", distanceType));
@@ -316,7 +321,8 @@ namespace TensileLite
                                     Base::template Pair<Matching::ManhattanDistance<Key>>(),
                                     Base::template Pair<Matching::EuclideanDistance<Key>>(),
                                     Base::template Pair<Matching::RandomDistance<Key>>(),
-                                    Base::template Pair<Matching::GridBasedDistance<Key>>()});
+                                    Base::template Pair<Matching::GridBasedDistance<Key>>(),
+                                    Base::template Pair<Matching::IntensityDistance<Key>>()});
             }
         };
 
@@ -352,6 +358,12 @@ namespace TensileLite
         template <typename Key, typename IO>
         struct MappingTraits<Matching::GridBasedDistance<Key>, IO>
             : public AutoMappingTraits<Matching::GridBasedDistance<Key>, IO>
+        {
+        };
+
+        template <typename Key, typename IO>
+        struct MappingTraits<Matching::IntensityDistance<Key>, IO>
+            : public AutoMappingTraits<Matching::IntensityDistance<Key>, IO>
         {
         };
     } // namespace Serialization

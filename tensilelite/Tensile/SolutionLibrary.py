@@ -89,7 +89,7 @@ class MatchingLibrary:
             3: Properties.Property("FreeSizeB", index=0),
             1: Properties.Property("BoundSize", index=0)
         }
-        if distance == "Equality" or distance == "GridBased":
+        if distance == "Equality" or distance == "GridBased" or distance == "Intensity":
             propertyKeys[0] = Properties.Property("BatchSize", index=0)
 
         properties = list([propertyKeys[i] for i in indices if i in propertyKeys])

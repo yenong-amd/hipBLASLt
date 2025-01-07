@@ -373,6 +373,46 @@ namespace TensileLite
                 return true;
             }
         };
+
+        template <typename Key>
+        struct IntensityDistance : public Distance<Key>
+        {
+            enum
+            {
+                HasIndex = false,
+                HasValue = false
+            };
+
+            static std::string Type()
+            {
+                return "Intensity";
+            }
+            virtual std::string type() const override
+            {
+                return Type();
+            }
+
+            inline double operator()(Key const& p1, Key const& p2) const
+            {
+                double distance = 0.0;
+
+                for(int i = 0; i < p1.size(); i++)
+                {
+                    double di = p1[i] - p2[i];
+                    distance += di * di;
+                }
+                return distance;
+            }
+
+            inline bool improvementPossible(Key const& p1,
+                                            Key const& p2,
+                                            size_t     idx,
+                                            double     bestDistance) const
+            {
+                double d0 = p1[idx] - p2[idx];
+                return ((d0 * d0) < bestDistance) || (p1 == p2);
+            }
+        };
         /**
  * @}
  */
