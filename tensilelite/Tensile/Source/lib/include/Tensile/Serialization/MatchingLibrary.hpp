@@ -115,7 +115,7 @@ namespace TensileLite
                 }
 
                 iot::mapRequired(io, "properties", properties);
-
+                std::cout << "Serializing problem matching library." << std::endl;
                 bool success = false;
                 if(properties.size() == 0)
                     iot::setError(io, "Matching table must have at least one property.");
@@ -151,7 +151,7 @@ namespace TensileLite
             static bool mappingKey(IO& io, Library& lib, Properties const& properties)
             {
                 std::string distanceType;
-
+                std::cout << "Serializing distance matching properties." << std::endl;
                 if(iot::outputting(io))
                     distanceType = lib.table->distanceType();
 
