@@ -1484,7 +1484,7 @@ kd_tree_batch_1_again:
                                                              Transform  transform) const
             {
                 std::tuple<ReturnValue, double> bestKeymatch;
-                return bestKeyMatch;
+                return bestKeymatch;
                 // std::vector<ReturnValue> solutions = findTopKeyMatch(key, transform, 1);
                 // ReturnValue              solution  = this->nullValue;
                 // if(solutions.size() > 0)
@@ -1505,7 +1505,7 @@ kd_tree_batch_1_again:
                 Key    pkey      = ProblemKey::keyForProblem<Key, Object>(object, this->properties);
                 double intensity = std::log2(object.arithmeticIntensity());
                 std::transform(pkey.begin(), pkey.end(), pkey.begin(), [](int64_t x) {
-                    return std::log10(static_cast<double>(x))
+                    return std::log10(static_cast<double>(x));
                 });
 
                 double                        bestDistance = std::numeric_limits<double>::max();
@@ -1550,41 +1550,41 @@ kd_tree_batch_1_again:
                 findTopKeyMatch(Key const& key, Transform transform, int numSolutions) const
             {
                 std::vector<ReturnValue> topKeymatch;
-                return topKeyMatch;
+                return topKeymatch;
                 // if(Debug::Instance().printPropertyEvaluation())
                 //     return findBestKeyMatch_Intensity<true>(key, transform, numSolutions);
                 // else
                 //     return findBestKeyMatch_Intensity<false>(key, transform, numSolutions);
             }
 
-            template <bool T_Debug>
-            std::vector<ReturnValue> findBestKeyMatch_Intensity(Key const& key_orig,
-                                                                Transform  transform,
-                                                                int        numSolutions) const
-            {
-                std::vector<ReturnValue> bestmatches;
-                if(this->table.empty())
-                {
-                    return bestmatches;
-                }
-                double bestDistance = std::numeric_limits<double>::max();
-                auto   bestMatch    = this->nullValue;
-                auto problem
-                    // std::cout << key_orig[0] << ", " << key_orig[1] << ", " << key_orig[2] << std::endl;
-                    // if(key_orig.size() > 3)
-                    //     std::cout << key_orig[3] << std::endl;
-                    std::transform(key_orig.begin(), key_orig.end(), key_orig.begin(), std::log10);
-                for(auto iter = table.begin(); iter != table.end(); ++iter)
-                {
-                    // std::cout << iter->key[0] << ", " << iter->key[1] << ", " << iter->key[2]
-                    //           << ", " << iter->key[3] << std::endl;
-                    // std::cout << iter->value << ", " << iter->speed << std::endl;
+            // template <bool T_Debug>
+            // std::vector<ReturnValue> findBestKeyMatch_Intensity(Key const& key_orig,
+            //                                                     Transform  transform,
+            //                                                     int        numSolutions) const
+            // {
+            //     std::vector<ReturnValue> bestmatches;
+            //     if(this->table.empty())
+            //     {
+            //         return bestmatches;
+            //     }
+            //     double bestDistance = std::numeric_limits<double>::max();
+            //     auto   bestMatch    = this->nullValue;
+            //     // auto problem
+            //         // std::cout << key_orig[0] << ", " << key_orig[1] << ", " << key_orig[2] << std::endl;
+            //         // if(key_orig.size() > 3)
+            //         //     std::cout << key_orig[3] << std::endl;
+            //         std::transform(key_orig.begin(), key_orig.end(), key_orig.begin(), std::log10);
+            //     for(auto iter = table.begin(); iter != table.end(); ++iter)
+            //     {
+            //         // std::cout << iter->key[0] << ", " << iter->key[1] << ", " << iter->key[2]
+            //         //           << ", " << iter->key[3] << std::endl;
+            //         // std::cout << iter->value << ", " << iter->speed << std::endl;
 
-                    auto myDistance = distance(key_orig, iter->key);
-                    auto myMatch    = transform(iter->value);
-                }
-                return bestmatches;
-            }
+            //         auto myDistance = distance(key_orig, iter->key);
+            //         auto myMatch    = transform(iter->value);
+            //     }
+            //     return bestmatches;
+            // }
         };
     } // namespace Matching
 } // namespace TensileLite
