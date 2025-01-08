@@ -120,28 +120,28 @@ namespace TensileLite
                 if(properties.size() == 0)
                     iot::setError(io, "Matching table must have at least one property.");
                 else if(properties.size() == 1)
-                    success = mappingKey<std::array<int64_t, 1>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 1>>(io, lib, properties);
                 else if(properties.size() == 2)
-                    success = mappingKey<std::array<int64_t, 2>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 2>>(io, lib, properties);
                 else if(properties.size() == 3)
-                    success = mappingKey<std::array<int64_t, 3>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 3>>(io, lib, properties);
                 else if(properties.size() == 4)
-                    success = mappingKey<std::array<int64_t, 4>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 4>>(io, lib, properties);
                 else if(properties.size() == 5)
-                    success = mappingKey<std::array<int64_t, 5>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 5>>(io, lib, properties);
                 else if(properties.size() == 6)
-                    success = mappingKey<std::array<int64_t, 6>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 6>>(io, lib, properties);
                 else if(properties.size() == 7)
-                    success = mappingKey<std::array<int64_t, 7>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 7>>(io, lib, properties);
                 else if(properties.size() == 8)
-                    success = mappingKey<std::array<int64_t, 8>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 8>>(io, lib, properties);
                 else if(properties.size() == 9)
-                    success = mappingKey<std::array<int64_t, 9>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 9>>(io, lib, properties);
                 else if(properties.size() == 10)
-                    success = mappingKey<std::array<int64_t, 10>>(io, lib, properties);
+                    success = mappingKey<std::array<double_t, 10>>(io, lib, properties);
 
                 if(!success)
-                    success = mappingKey<std::vector<int64_t>>(io, lib, properties);
+                    success = mappingKey<std::vector<double_t>>(io, lib, properties);
 
                 if(!success)
                     iot::setError(io, "Can't write out key: wrong type.");
