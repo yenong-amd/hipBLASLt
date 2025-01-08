@@ -26,7 +26,9 @@
 
 #pragma once
 
+#include <algorithm>
 #include <array>
+#include <cmath>
 #include <cstddef>
 #include <functional>
 #include <iomanip>
@@ -1502,7 +1504,9 @@ kd_tree_batch_1_again:
 
                 Key    pkey      = ProblemKey::keyForProblem<Key, Object>(object, this->properties);
                 double intensity = std::log2(object.arithmeticIntensity());
-                std::transform(pkey.begin(), pkey.end(), pkey.begin(), std::log10);
+                std::transform(pkey.begin(), pkey.end(), pkey.begin(), [](int64_t x) {
+                    return std::log10(static_cast<double>(x))
+                });
 
                 double                        bestDistance = std::numeric_limits<double>::max();
                 auto                          bestMatch    = this->nullValue;
