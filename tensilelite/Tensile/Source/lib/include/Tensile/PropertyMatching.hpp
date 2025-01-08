@@ -1526,7 +1526,7 @@ kd_tree_batch_1_again:
 
                     if(rankmatches.size() < numSolutions)
                     {
-                        rankmatches.insert(std::make_pair(myDistance, myMatch))
+                        rankmatches.insert(std::make_pair(myDistance, myMatch));
                     }
                     else if(rankmatches.rbegin()->first > myDistance)
                     {
