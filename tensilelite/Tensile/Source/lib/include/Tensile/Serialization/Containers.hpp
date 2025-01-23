@@ -2,7 +2,11 @@
  *
  * MIT License
  *
- * Copyright (C) 2022-2023 Advanced Micro Devices, Inc. All rights reserved.
+<<<<<<< HEAD
+ * Copyright (C) 2022-2025 Advanced Micro Devices, Inc. All rights reserved.
+=======
+ * Copyright (C) 2022-2025 Advanced Micro Devices, Inc. All rights reserved.
+>>>>>>> 6f4ad3c8 (Update MLP solution selection model)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
