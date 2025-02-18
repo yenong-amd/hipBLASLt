@@ -196,6 +196,8 @@ namespace TensileLite
 
         TENSILE_SERIALIZE_VECTOR(false, std::shared_ptr<TensileLite::ContractionSolution>);
 
+        TENSILE_SERIALIZE_VECTOR(true, TensileLite::MLPClassification::ResBlock);
+
         template <typename Value, typename IO>
         struct SequenceTraits<std::vector<TensileLite::FreeSizeEntry<Value>>, IO>
             : public DefaultSequenceTraits<std::vector<TensileLite::FreeSizeEntry<Value>>, IO, false>
