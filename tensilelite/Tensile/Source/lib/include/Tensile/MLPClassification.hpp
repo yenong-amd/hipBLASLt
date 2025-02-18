@@ -102,6 +102,7 @@ namespace TensileLite
             std::vector<dtype> weight;
         };
 
+        // #pragma float_control(precise, off, push)
         /*
          * Specifying matrix dimensions at compile time for better unrolling etc.?
          */
@@ -114,20 +115,23 @@ namespace TensileLite
             void operator()(const std::vector<dtype>& F,
                             std::vector<dtype>& Fout) const override
             {
-                // assert(F.size() == N_IN && Fout.size() == N_OUT);
-                // auto W = weight.data();
-                // for (int i=0; i<N_OUT; i++) {
-                //     dtype fi(0.);
-                //     for (int j=0; j<N_IN; j++)
-                //         fi += W[j] * F[j];
-                //     W += N_IN;
-                //     Fout[i] += fi;
-                // }
-                for (int i=0; i<N_OUT; i++)
-                    Fout[i] += std::inner_product
-                        (F.begin(), F.begin()+N_IN, weight.begin()+i*N_IN, dtype(0.));
+                assert(F.size() == N_IN && Fout.size() == N_OUT);
+                auto W = weight.data();
+                for (int i=0; i<N_OUT; i++) {
+                    dtype fi(0.);
+                    auto Fptr = F.data();
+                    // #pragma float_control(precise, off)
+                    #pragma clang loop unroll_count(N_IN)
+                    for (int j=0; j<N_IN; j++)
+                        fi += (*W++) * (*Fptr++);
+                    Fout[i] += fi;
+                }
+                // for (int i=0; i<N_OUT; i++)
+                //     Fout[i] += std::inner_product
+                //         (F.begin(), F.begin()+N_IN, weight.begin()+i*N_IN, dtype(0.));
             }
         };
+        // #pragma float_control(pop)
 
         struct DenseLayer
         {
@@ -138,11 +142,15 @@ namespace TensileLite
                 int n_out = bias.size();
                 int n_in = weights.size() / n_out;
                      if (n_in ==  16 && n_out ==  16) W = std::make_shared<WeightMatrixFixed< 16, 16>>(weights);
+                else if (n_in ==  32 && n_out ==  16) W = std::make_shared<WeightMatrixFixed< 32, 16>>(weights);
+                else if (n_in ==  32 && n_out ==  32) W = std::make_shared<WeightMatrixFixed< 32, 32>>(weights);
+                else if (n_in ==  32 && n_out ==  64) W = std::make_shared<WeightMatrixFixed< 32, 64>>(weights);
+                else if (n_in ==  64 && n_out ==  32) W = std::make_shared<WeightMatrixFixed< 64, 32>>(weights);
+                else if (n_in ==  64 && n_out ==  64) W = std::make_shared<WeightMatrixFixed< 64, 64>>(weights);
                 else if (n_in ==  64 && n_out == 128) W = std::make_shared<WeightMatrixFixed< 64,128>>(weights);
+                else if (n_in == 128 && n_out ==  32) W = std::make_shared<WeightMatrixFixed<128, 32>>(weights);
                 else if (n_in == 128 && n_out == 256) W = std::make_shared<WeightMatrixFixed<128,256>>(weights);
                 else if (n_in == 256 && n_out ==  64) W = std::make_shared<WeightMatrixFixed<256, 64>>(weights);
-                else if (n_in ==  64 && n_out ==  64) W = std::make_shared<WeightMatrixFixed< 64, 64>>(weights);
-                else if (n_in ==  64 && n_out ==  32) W = std::make_shared<WeightMatrixFixed< 64, 32>>(weights);
                 else                                  W = std::make_shared<WeightMatrix>(weights);
                 B.assign(bias.begin(), bias.end());
             }
