@@ -142,6 +142,9 @@ def formForkParametersYamlData(currentIndexSolution, MIInstruction9Bits):
     forkParametersYamlData.append("      ForkParameters:\n")
     
     for forkKey, forkValue in currentIndexSolution.items():
+      if forkKey in ["LdsBlockSizePerPadA", "LdsBlockSizePerPadB", "StaggerUStride", "WorkGroupMappingXCC", "WorkGroupMappingXCCGroup"]:
+          continue
+
       if MIInstruction9Bits == "None":
         if forkKey == "ProblemType" or forkKey == "MatrixInstruction":
           tPrint(1, "Continuing Matrix Instructions for Non MI\n")
