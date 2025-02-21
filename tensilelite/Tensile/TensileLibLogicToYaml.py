@@ -129,6 +129,8 @@ def formProblemTypeYamlData(currentIndexProblemType, versionString):
          problemTypeYamlData.append("      {}: {}\n".format(problemTypeKey, problemTypeValue))
          continue
       if problemTypeKey in defaultProblemType:
+         if problemTypeKey in ["Activation", "UseBias", "UseScaleAlphaVec"]:
+             continue
          if problemTypeValue != defaultProblemType[problemTypeKey]:
             problemTypeYamlData.append("      {}: {}\n".format(problemTypeKey, problemTypeValue))
             
@@ -169,7 +171,9 @@ def formForkParametersYamlData(currentIndexSolution, MIInstruction9Bits):
         forkValue = [forkValue] # convert to list
         if forkValue != defaultBenchmarkCommonParameters[index][forkKey]:
           forkParametersYamlData.append("         - {}: {}\n".format(forkKey, forkValue))
-            
+    
+    forkParametersYamlData.append("         - StreamK: [3]\n")
+    forkParametersYamlData.append("         - StreamKXCCMapping: [0, 8]\n")
     return ''.join(str(x) for x in forkParametersYamlData)
 
 def form9BitMIInstruction(currentSolutionState):
