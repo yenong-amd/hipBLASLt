@@ -36,6 +36,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 enable_testing()
 
+# add_compile_definitions(TENSILE_USE_ONNX)
+# include_directories(/home/pghysels/local/onnxruntime-linux-x64-1.20.1/include/)
+# link_libraries(/home/pghysels/local/onnxruntime-linux-x64-1.20.1/lib/libonnxruntime.so)
+
+
 # Consider removing this in the future
 # This should appear before the project command, because it does not use FORCE
 if(WIN32)
