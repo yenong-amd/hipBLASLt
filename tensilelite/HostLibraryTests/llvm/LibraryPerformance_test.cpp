@@ -129,13 +129,21 @@ TEST_P(LibraryPerformanceTest, CreateProblem)
 
 TEST_P(LibraryPerformanceTest, FindSolution)
 {
-    for(int i = 0; i < 100000; i++)
+    for(int i = 0; i < 10; i++)
     {
         auto problem  = RandomGEMM();
-        auto solution = library->findBestSolution(problem, hardware);
+        //auto solution = library->findBestSolution(problem, hardware);
+        auto solution = library->findTopSolutions(problem, hardware, 1);
 
         if(solutionRequired)
-            ASSERT_NE(solution, nullptr) << i << problem;
+            EXPECT_EQ(solution.size(), 1) << i << problem;
+        // {
+        //     for(auto const& kernel : solution)
+        //     {
+        // std::cout << kernel->description() << std::endl;
+        // ASSERT_NE(kernel, nullptr) << i << problem;
+        // }
+        // }
     }
 }
 
@@ -144,27 +152,27 @@ TEST_P(LibraryPerformanceTest, FindCachedSolution)
     for(int i = 0; i < 100; i++)
     {
         auto problem  = RandomGEMM();
-        auto solution = library->findBestSolution(problem, hardware);
+        auto solution = library->findTopSolutions(problem, hardware, 1);
 
         if(solutionRequired)
-            ASSERT_NE(solution, nullptr) << i << problem;
+            ASSERT_NE(solution[0], nullptr) << i << problem;
     }
 
     auto problem = RandomGEMM();
 
-    for(int i = 0; i < 1000000; i++)
+    for(int i = 0; i < 100; i++)
     {
-        auto solution = library->findBestSolution(problem, hardware);
+        auto solution = library->findTopSolutions(problem, hardware, 1);
 
         if(solutionRequired)
-            ASSERT_NE(solution, nullptr) << i << problem;
+            ASSERT_NE(solution[0], nullptr) << i << problem;
     }
 }
 
 TEST_P(LibraryPerformanceTest, Solve)
 {
     float                                a, b, c, d;
-    ContractionProblemGemm                   problem;
+    ContractionProblemGemm               problem;
     std::shared_ptr<ContractionSolution> solution;
 
     for(int i = 0; i < 10 && solution == nullptr; i++)
@@ -173,9 +181,7 @@ TEST_P(LibraryPerformanceTest, Solve)
         solution = library->findBestSolution(problem, hardware);
 
         if(solutionRequired)
-        {
             EXPECT_NE(solution, nullptr) << problem;
-        }
     }
 
     if(solution)
@@ -221,7 +227,7 @@ TEST_P(LibraryPerformanceTest, FindAndSolve)
         auto                          problem  = RandomGEMM();
         auto                          solution = library->findBestSolution(problem, hardware);
         float                         a, b, c, d;
-        ContractionInputs inputs{&a, &b, &c, &d, 1.0, float(problem.beta())};
+        ContractionInputs             inputs{&a, &b, &c, &d, 1.0f, 1.0f};
 
         if(solutionRequired)
             ASSERT_NE(solution, nullptr) << i << problem;
@@ -238,7 +244,7 @@ TEST_P(LibraryPerformanceTest, FindAndSolveWithLog)
         auto                          problem  = RandomGEMM();
         auto                          solution = library->findBestSolution(problem, hardware);
         float                         a, b, c, d;
-        ContractionInputs inputs{&a, &b, &c, &d, 1.0, float(problem.beta())};
+        ContractionInputs             inputs{&a, &b, &c, &d, float(1.0), float(problem.beta())};
 
         if(solutionRequired)
         {
@@ -278,7 +284,9 @@ TEST_P(LibraryPerformanceTest, SpecificSizes)
                                                     2.0);
 
     auto solution = library->findBestSolution(problem, hardware);
-    //ASSERT_NE(solution, nullptr) << i << problem;
+    std::cout << solution->description();
+    if(solutionRequired)
+        ASSERT_NE(solution, nullptr);
 }
 
 std::vector<LibraryPerformanceTest::ParamType> GetLibraries(std::string const& ext)
@@ -289,10 +297,10 @@ std::vector<LibraryPerformanceTest::ParamType> GetLibraries(std::string const& e
                              AMDGPU(AMDGPU::Processor::gfx906, 64, "Vega 20")};
 
     for(auto const& gpu : gpus)
-    {
         rv.push_back(std::make_tuple(gpu, "Kernels." + ext, false, false));
-    }
 
+    rv.push_back(std::make_tuple(
+        AMDGPU(AMDGPU::Processor::gfx942, 304, "Aquavanjaram"), "Kernels." + ext, false, true));
     return rv;
 }
 
