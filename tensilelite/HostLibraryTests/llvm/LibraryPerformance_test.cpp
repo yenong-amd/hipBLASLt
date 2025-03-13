@@ -54,13 +54,15 @@ struct LibraryPerformanceTest
     AMDGPU                                               hardware;
     std::string                                          filename;
     bool                                                 hasNavi, solutionRequired;
+    int                                                      selectionMethod;
     std::shared_ptr<SolutionLibrary<ContractionProblemGemm>> library;
 
     static std::map<std::string, std::shared_ptr<SolutionLibrary<ContractionProblemGemm>>> libraryCache;
 
     void SetUp() override
     {
-        std::tie(hardware, filename, hasNavi, solutionRequired) = GetParam();
+        std::tie(hardware, filename, hasNavi, solutionRequired, selectionMethod) = GetParam();
+        setenv TENSILE_SOLUTION_SELECTION_METHOD                                 = selectionMethod;
 
         if(hardware.processor == AMDGPU::Processor::gfx1010 && !hasNavi)
             GTEST_SKIP();
@@ -75,6 +77,11 @@ struct LibraryPerformanceTest
             else
                 ASSERT_NE(library, nullptr);
         }
+    }
+
+    void TearDown() override
+    {
+        unset TENSILE_SOLUTION_SELECTION_METHOD;
     }
 
     boost::filesystem::path libraryPath()
@@ -297,10 +304,13 @@ std::vector<LibraryPerformanceTest::ParamType> GetLibraries(std::string const& e
                              AMDGPU(AMDGPU::Processor::gfx906, 64, "Vega 20")};
 
     for(auto const& gpu : gpus)
-        rv.push_back(std::make_tuple(gpu, "Kernels." + ext, false, false));
+        rv.push_back(std::make_tuple(gpu, "Kernels." + ext, false, false, 0));
 
-    rv.push_back(std::make_tuple(
-        AMDGPU(AMDGPU::Processor::gfx942, 304, "Aquavanjaram"), "Kernels." + ext, false, true));
+    rv.push_back(std::make_tuple(AMDGPU(AMDGPU::Processor::gfx942, 304, "Aquavanjaram"),
+                                 "Mlp_Kernels." + ext,
+                                 false,
+                                 true,
+                                 3));
     return rv;
 }
 
