@@ -102,11 +102,6 @@ namespace TensileLite
 
         std::vector<dtype> TunaNet::predict(std::vector<float> const& probkey) const
         {
-#if defined(TENSILE_USE_ONNX)
-            static const char* onnx_model_path = std::getenv("TENSILE_ONNX_MODEL_PATH");
-            if(!onnx_model.empty() && onnx_model_path)
-                return predict_onnx(probkey, onnx_model_path);
-#endif
             dtype M = probkey[0], N = probkey[1], B = probkey[2], K = probkey[3];
             dtype gflops = M * N * K / 1.e9, reads = (M*N + M*K + K*N) / 1.e6;
             std::vector<dtype> F =
@@ -118,6 +113,5 @@ namespace TensileLite
                 F = res(F);
             return dense(F);
         }
-
     }
 }

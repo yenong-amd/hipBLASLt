@@ -221,7 +221,7 @@ class DecisionTreeLibrary:
 
 class MLPClassificationLibrary:
     Tag = "MLPClassification"
-    StateKeys = [("type", "tag"), "table", "mlp", "tree", "problemFeatures"]
+    StateKeys = [("type", "tag"), "table", "mlp", "problemFeatures"]
 
     @classmethod
     def FromOriginalState(cls, d, solutions):
@@ -238,9 +238,8 @@ class MLPClassificationLibrary:
             pass
 
         mlp = d["mlp"]
-        tree = d["tree"]
         problem_features = d["problemFeatures"]
-        return cls(table, mlp, tree, problem_features)
+        return cls(table, mlp, problem_features)
 
     @property
     def tag(self):
@@ -254,10 +253,9 @@ class MLPClassificationLibrary:
     def remapSolutionIndices(self, indexMap):
         pass
 
-    def __init__(self, table, mlp, tree, problem_features):
+    def __init__(self, table, mlp, problem_features):
         self.table = table
         self.mlp = mlp
-        self.tree = tree
         self.problemFeatures = problem_features
 
 

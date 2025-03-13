@@ -38,23 +38,6 @@ namespace TensileLite
     {
 
         template <typename IO>
-        struct MappingTraits<Classification::Tree, IO>
-        {
-            using Tree = Classification::Tree;
-            using iot  = IOTraits<IO>;
-
-            static void mapping(IO& io, Tree& tree)
-            {
-                iot::mapRequired(io, "left", tree.left);
-                iot::mapRequired(io, "right", tree.right);
-                iot::mapRequired(io, "feature_solution", tree.feature_solution);
-                iot::mapRequired(io, "threshold", tree.threshold);
-            }
-
-            const static bool flow = false;
-        };
-
-        template <typename IO>
         struct MappingTraits<MLPClassification::StandardScaler, IO>
         {
             using Scaler = MLPClassification::StandardScaler;
@@ -80,7 +63,6 @@ namespace TensileLite
 
             static void mapping(IO& io, TunaNet& mlp)
             {
-                iot::mapOptional(io, "onnx", mlp.onnx_model);
                 iot::mapRequired(io, "scaler", mlp.scaler);
                 iot::mapRequired(io, "res_blocks", mlp.res_blocks);
                 iot::mapRequired(io, "dense", mlp.dense);
@@ -185,20 +167,6 @@ namespace TensileLite
                     lib.model = model;
                 }
                 iot::mapRequired(io, "mlp", *model);
-
-                // TODO probably remove the Tree from this library?
-                using Tree = Classification::Tree;
-                std::shared_ptr<Tree> tree;
-                if(iot::outputting(io))
-                {
-                    tree = std::dynamic_pointer_cast<Tree>(lib.tree);
-                }
-                else
-                {
-                    tree     = std::make_shared<Tree>();
-                    lib.tree = tree;
-                }
-                iot::mapRequired(io, "tree", *tree);
 
                 using ProblemFeatures
                     = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;

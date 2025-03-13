@@ -32,9 +32,8 @@
 
 #include <Tensile/Debug.hpp>
 #include <Tensile/MLFeatures.hpp>
-#include <Tensile/ProblemKey.hpp>
 #include <Tensile/MLPClassification.hpp>
-#include <Tensile/ClassificationTree.hpp>
+#include <Tensile/ProblemKey.hpp>
 #include <Tensile/SolutionLibrary.hpp>
 #include <Tensile/Utils.hpp>
 
@@ -50,13 +49,11 @@ namespace TensileLite
     struct MLPClassificationLibrary : public SolutionLibrary<MyProblem, MySolution>
     {
         using TunaNet          = MLPClassification::TunaNet;
-        using Tree             = Classification::Tree;
         using SolutionFeatures = std::vector<std::shared_ptr<MLFeatures::MLFeature<MySolution>>>;
         using ProblemFeatures  = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
 
         std::map<int, std::shared_ptr<MySolution>> solutionmap;
         std::shared_ptr<TunaNet>                   model;
-        std::shared_ptr<Tree>                      tree;
         SolutionFeatures                           solFeatures;
         ProblemFeatures                            probFeatures;
 
@@ -98,16 +95,11 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
-            std::vector<float> problemkey
-                = ProblemKey::keyForProblem<std::vector<float>, MyProblem, float>(
-                    problem, this->probFeatures);
-
-            auto winner = tree->predict(problemkey);
-            for (auto& s : solutionmap)
-                if (s.second->libraryLogicIndex == winner)
-                    return s.second;
-            // TODO assert we don't get here
-            return 0;
+            SolutionVector<MySolution>  solutions = findTopSolutions(problem, hardware, 1);
+            std::shared_ptr<MySolution> solution  = nullptr;
+            if(solutions.size() > 0)
+                solution = solutions[0];
+            return solution;
         }
 
         virtual SolutionSet<MySolution>
@@ -143,10 +135,6 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
-            // Use DecisionTreeClassifier
-            // if(numSolutions == 1)
-            //     return SolutionVector<MySolution>({findBestSolution(problem, hardware)});
-
             std::vector<float> problemkey
                 = ProblemKey::keyForProblem<std::vector<float>, MyProblem, float>(
                     problem, this->probFeatures);
