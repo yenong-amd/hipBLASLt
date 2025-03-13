@@ -27,8 +27,8 @@
 #pragma once
 
 #include <array>
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include "DataTypes_Half.hpp"
 
@@ -42,6 +42,8 @@ namespace TensileLite
      *
      * Neural net used to estimate efficiency values for solutions in the
      * library. Used for MLPClassificationLibrary.
+     *
+     * See TunaNet.cpp
      */
 
     /**
@@ -58,49 +60,27 @@ namespace TensileLite
         struct StandardScaler
         {
             void operator()(std::vector<dtype>& F) const;
+            bool valid(bool verbose = false) const;
 
             std::vector<dtype> mean, scale;
         };
 
-        struct WeightMatrix
-        {
-            WeightMatrix() = default;
-            WeightMatrix(const std::vector<float>& W) : weight(W.begin(), W.end()) {}
-            virtual ~WeightMatrix() = default;
-
-            virtual void operator()(const std::vector<dtype>& F,
-                                    std::vector<dtype>& Fout) const;
-
-            std::vector<dtype> weight;
-        };
-
-        /*
-         * Specifying matrix dimensions at compile time for better unrolling etc.?
-         */
-        template <int N_IN>
-        struct WeightMatrixFixed : public WeightMatrix
-        {
-            WeightMatrixFixed() = default;
-            WeightMatrixFixed(const std::vector<float>& W) : WeightMatrix(W) {}
-
-            void operator()(const std::vector<dtype>& F,
-                            std::vector<dtype>& Fout) const override;
-        };
+        // forward declaration
+        struct WeightMatrix;
 
         struct DenseLayer
         {
             DenseLayer() = default;
-            DenseLayer(const std::vector<float>& weights, std::vector<float>& bias);
+            DenseLayer(const std::vector<float>& weights, const std::vector<float>& bias);
 
-            std::vector<dtype>
-            operator()(const std::vector<dtype>& F) const
-            {
-                auto Fout = B;
-                (*W)(F, Fout);
-                return Fout;
-            }
+            std::vector<dtype> operator()(const std::vector<dtype>& F) const;
 
-            std::vector<dtype> B;
+            bool valid(bool verbose = false) const;
+
+            std::size_t size_in;
+            std::size_t size_out;
+
+            std::vector<dtype>            B;
             std::shared_ptr<WeightMatrix> W;
         };
 
@@ -108,8 +88,9 @@ namespace TensileLite
         {
             ResBlock() = default;
 
-            std::vector<dtype>
-            operator()(const std::vector<dtype>& F) const;
+            std::vector<dtype> operator()(const std::vector<dtype>& F) const;
+
+            bool valid(bool verbose = false) const;
 
             DenseLayer linear1, linear2, res;
         };
@@ -120,15 +101,17 @@ namespace TensileLite
 
             std::vector<dtype> predict(std::vector<float> const& probkey) const;
 
+            bool valid(bool verbose = false) const;
+
             std::string description() const
             {
                 return "TunaNet";
             }
 
             std::vector<ResBlock> res_blocks;
-            DenseLayer dense;
-            StandardScaler scaler;
+            DenseLayer            dense;
+            StandardScaler        scaler;
         };
 
-     } // namespace MLPClassification
+    } // namespace MLPClassification
 } // namespace TensileLite

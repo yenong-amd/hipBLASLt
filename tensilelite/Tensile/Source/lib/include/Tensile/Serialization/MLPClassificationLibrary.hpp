@@ -167,6 +167,7 @@ namespace TensileLite
                     lib.model = model;
                 }
                 iot::mapRequired(io, "mlp", *model);
+                model->valid(true);
 
                 using ProblemFeatures
                     = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
