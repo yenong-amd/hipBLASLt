@@ -51,9 +51,9 @@ set(tensile_sources  ${tensile_sources}
     )
 
 include(CheckCXXCompilerFlag)
-check_cxx_compiler_flag("-march=native -ffast-math" CXX_MARCH_NATIVE_FAST_MATH_FLAGS_SUPPORTED)
-if(CXX_MARCH_NATIVE_FAST_MATH_FLAGS_SUPPORTED)
-    set_source_files_properties(source/MLPNet.cpp PROPERTIES COMPILE_FLAGS "-march=native -ffast-math")
+check_cxx_compiler_flag("-ffast-math" CXX_FAST_MATH_FLAG_SUPPORTED)
+if(CXX_FAST_MATH_FLAG_SUPPORTED)
+    set_source_files_properties(source/TunaNet.cpp PROPERTIES COMPILE_FLAGS "-ffast-math")
 endif()
 
 
