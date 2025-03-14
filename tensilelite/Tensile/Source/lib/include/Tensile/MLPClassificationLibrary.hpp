@@ -48,12 +48,12 @@ namespace TensileLite
     template <typename MyProblem, typename MySolution = typename MyProblem::Solution>
     struct MLPClassificationLibrary : public SolutionLibrary<MyProblem, MySolution>
     {
-        using TunaNet          = MLPClassification::TunaNet;
+        using MLPNet           = MLPClassification::MLPNet;
         using SolutionFeatures = std::vector<std::shared_ptr<MLFeatures::MLFeature<MySolution>>>;
         using ProblemFeatures  = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
 
         std::map<int, std::shared_ptr<MySolution>> solutionmap;
-        std::shared_ptr<TunaNet>                   model;
+        std::shared_ptr<MLPNet>                   model;
         SolutionFeatures                           solFeatures;
         ProblemFeatures                            probFeatures;
 
@@ -68,7 +68,7 @@ namespace TensileLite
         virtual std::string description() const override
         {
             if(model == nullptr)
-                return concatenate(type(), ", TunaNet: nullptr");
+                return concatenate(type(), ", MLPNet: nullptr");
             else
                 return concatenate(type(), ": ", model->description());
         }

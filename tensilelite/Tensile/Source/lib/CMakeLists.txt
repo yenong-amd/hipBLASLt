@@ -47,7 +47,7 @@ set(tensile_sources  ${tensile_sources}
     source/TensorDescriptor.cpp
     source/Tensile.cpp
     source/Utils.cpp
-    source/TunaNet.cpp
+    source/MLPNet.cpp
     )
 
 include(CheckCXXCompilerFlag)

@@ -43,7 +43,7 @@ namespace TensileLite
      * Neural net used to estimate efficiency values for solutions in the
      * library. Used for MLPClassificationLibrary.
      *
-     * See TunaNet.cpp
+     * See MLPNet.cpp
      */
 
     /**
@@ -95,9 +95,9 @@ namespace TensileLite
             DenseLayer linear1, linear2, res;
         };
 
-        struct TunaNet
+        struct MLPNet
         {
-            TunaNet() = default;
+            MLPNet() = default;
 
             std::vector<dtype> predict(std::vector<float> const& probkey) const;
 
@@ -105,7 +105,7 @@ namespace TensileLite
 
             std::string description() const
             {
-                return "TunaNet";
+                return "MLPNet";
             }
 
             std::vector<ResBlock> res_blocks;
