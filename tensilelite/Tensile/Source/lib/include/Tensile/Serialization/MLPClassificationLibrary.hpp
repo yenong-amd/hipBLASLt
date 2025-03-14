@@ -167,7 +167,8 @@ namespace TensileLite
                     lib.model = model;
                 }
                 iot::mapRequired(io, "mlp", *model);
-                model->valid(true);
+                if(!model->valid(true))
+                    throw std::runtime_exception("ERROR: MLP library not in a valid state.");
 
                 using ProblemFeatures
                     = std::vector<std::shared_ptr<MLFeatures::MLFeature<MyProblem>>>;
