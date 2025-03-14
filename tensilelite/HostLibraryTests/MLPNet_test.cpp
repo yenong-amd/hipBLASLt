@@ -32,7 +32,7 @@
 
 constexpr double abs_error = 10. * std::numeric_limits<TensileLite::MLPClassification::dtype>::epsilon();
 
-TEST(TunaNet, DenseLayer)
+TEST(MLPNet, DenseLayer)
 {
     using namespace TensileLite;
     using namespace MLPClassification;
@@ -67,7 +67,7 @@ std::vector<T> normal_random_vector(std::size_t n) {
     return v;
 }
 
-TEST(TunaNet, DenseLayerFixed)
+TEST(MLPNet, DenseLayerFixed)
 {
     using namespace TensileLite;
     using namespace MLPClassification;
@@ -91,7 +91,7 @@ TEST(TunaNet, DenseLayerFixed)
     }
 }
 
-TEST(TunaNet, DenseLayerDimFail)
+TEST(MLPNet, DenseLayerDimFail)
 {
     using namespace TensileLite;
     using namespace MLPClassification;
@@ -102,7 +102,7 @@ TEST(TunaNet, DenseLayerDimFail)
         std::runtime_error);
 }
 
-TEST(TunaNet, StandardScaler)
+TEST(MLPNet, StandardScaler)
 {
     using namespace TensileLite;
     using namespace MLPClassification;
@@ -124,7 +124,7 @@ TEST(TunaNet, StandardScaler)
         EXPECT_NEAR(F[i], Ftrue[i], abs_error);
 }
 
-TEST(TunaNet, ResBlock)
+TEST(MLPNet, ResBlock)
 {
     using namespace TensileLite;
     using namespace MLPClassification;
@@ -153,15 +153,4 @@ TEST(TunaNet, ResBlock)
 
     for (std::size_t i=0; i<Ftrue.size(); i++)
         EXPECT_NEAR(Ftrue[i], Fout[i], abs_error);
-}
-
-TEST(TunaNet, TunaNet)
-{
-    using namespace TensileLite;
-    using namespace MLPClassification;
-    
-    // StandardScaler scaler;
-    // scaler.mean = normal_random_vector<dtype>(n_in);
-    // scaler.scale = normal_random_vector<dtype>(n_in);
-    
 }
