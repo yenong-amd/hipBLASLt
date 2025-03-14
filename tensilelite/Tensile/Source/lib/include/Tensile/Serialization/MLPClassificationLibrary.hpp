@@ -56,12 +56,12 @@ namespace TensileLite
         };
 
         template <typename IO>
-        struct MappingTraits<MLPClassification::TunaNet, IO>
+        struct MappingTraits<MLPClassification::MLPNet, IO>
         {
-            using TunaNet = MLPClassification::TunaNet;
+            using MLPNet = MLPClassification::MLPNet;
             using iot     = IOTraits<IO>;
 
-            static void mapping(IO& io, TunaNet& mlp)
+            static void mapping(IO& io, MLPNet& mlp)
             {
                 iot::mapRequired(io, "scaler", mlp.scaler);
                 iot::mapRequired(io, "res_blocks", mlp.res_blocks);
@@ -155,15 +155,15 @@ namespace TensileLite
                     }
                 }
 
-                using TunaNet = MLPClassification::TunaNet;
-                std::shared_ptr<TunaNet> model;
+                using MLPNet = MLPClassification::MLPNet;
+                std::shared_ptr<MLPNet> model;
                 if(iot::outputting(io))
                 {
-                    model = std::dynamic_pointer_cast<TunaNet>(lib.model);
+                    model = std::dynamic_pointer_cast<MLPNet>(lib.model);
                 }
                 else
                 {
-                    model     = std::make_shared<TunaNet>();
+                    model     = std::make_shared<MLPNet>();
                     lib.model = model;
                 }
                 iot::mapRequired(io, "mlp", *model);

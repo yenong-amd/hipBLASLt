@@ -47,13 +47,13 @@ set(tensile_sources  ${tensile_sources}
     source/TensorDescriptor.cpp
     source/Tensile.cpp
     source/Utils.cpp
-    source/TunaNet.cpp
+    source/MLPNet.cpp
     )
 
 include(CheckCXXCompilerFlag)
 check_cxx_compiler_flag("-march=native -ffast-math" CXX_MARCH_NATIVE_FAST_MATH_FLAGS_SUPPORTED)
 if(CXX_MARCH_NATIVE_FAST_MATH_FLAGS_SUPPORTED)
-    set_source_files_properties(source/TunaNet.cpp PROPERTIES COMPILE_FLAGS "-march=native -ffast-math")
+    set_source_files_properties(source/MLPNet.cpp PROPERTIES COMPILE_FLAGS "-march=native -ffast-math")
 endif()
 
 

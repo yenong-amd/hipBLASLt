@@ -215,7 +215,7 @@ namespace TensileLite
             return is_valid;
         }
 
-        std::vector<dtype> TunaNet::predict(std::vector<float> const& probkey) const
+        std::vector<dtype> MLPNet::predict(std::vector<float> const& probkey) const
         {
             dtype              M = probkey[0], N = probkey[1], B = probkey[2], K = probkey[3];
             dtype              gflops = M * N * K / 1.e9, reads = (M * N + M * K + K * N) / 1.e6;
@@ -237,7 +237,7 @@ namespace TensileLite
             return dense(F);
         }
 
-        bool TunaNet::valid(bool verbose) const
+        bool MLPNet::valid(bool verbose) const
         {
             bool is_valid
                 = scaler.valid(verbose) && dense.valid(verbose)
@@ -248,7 +248,7 @@ namespace TensileLite
             {
                 if(verbose)
                 {
-                    std::cerr << "TunaNet dense layer input size not correct." << std::endl;
+                    std::cerr << "MLPNet dense layer input size not correct." << std::endl;
                 }
                 is_valid = false;
             }
@@ -257,7 +257,7 @@ namespace TensileLite
             {
                 if(verbose)
                 {
-                    std::cerr << "StandardScaler size does not match TunaNet network input size."
+                    std::cerr << "StandardScaler size does not match MLPNet network input size."
                               << std::endl;
                 }
                 is_valid = false;
