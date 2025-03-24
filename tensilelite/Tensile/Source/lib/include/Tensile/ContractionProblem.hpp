@@ -2,7 +2,7 @@
  *
  * MIT License
  *
- * Copyright (C) 2022-2024 Advanced Micro Devices, Inc. All rights reserved.
+ * Copyright (C) 2022-2025 Advanced Micro Devices, Inc. All rights reserved.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -908,6 +908,9 @@ namespace TensileLite
             case ExperimentalOption::StreamK:
                 return PerformanceMetric::ExperimentalStreamK;
 
+            case ExperimentalOption::MLP:
+                return PerformanceMetric::ExperimentalMLP;
+
             default:
                 // warning?
                 return m_performanceMetric;
@@ -1312,6 +1315,13 @@ namespace TensileLite
                           void*                _ws,
                           void*                _Synchronizer,
                           unsigned char const* _metadata);
+
+        ContractionInputs(void const*     _a,
+                          void const*     _b,
+                          void const*     _c,
+                          void*           _d,
+                          ConstantVariant _alpha,
+                          ConstantVariant _beta);
 
         // TODO: Remove this
         void const* a     = nullptr;
