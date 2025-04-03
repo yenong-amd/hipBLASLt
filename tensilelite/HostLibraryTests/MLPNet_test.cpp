@@ -173,7 +173,7 @@ TEST(MLPNet, MLPNet)
     using namespace TensileLite;
     using namespace MLPClassification;
     
-    std::size_t n_solutions = 9, n_features = 10;
+    std::size_t n_solutions = 9, n_features = MLPNet::n_features;
     std::size_t h1 = 3, h2 = 5, h3 = 4, h4 = 7;
 
     MLPNet net;
@@ -182,6 +182,8 @@ TEST(MLPNet, MLPNet)
     net.dense = random_dense_layer(h4, n_solutions);
     net.scaler.mean = std::vector<dtype>(n_features, .7);
     net.scaler.scale = std::vector<dtype>(n_features, 3.6);
+
+    EXPECT_TRUE(net.valid());
 
     std::vector<float> probkey = normal_random_vector<float>(4);
     auto Fout = net.predict(probkey);
