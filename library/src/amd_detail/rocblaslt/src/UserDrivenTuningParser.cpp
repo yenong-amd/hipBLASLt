@@ -78,18 +78,25 @@ namespace TensileLite
         DataType inputTypeB  = DataType::None;
         DataType outputType  = DataType::None;
         DataType computeType = DataType::None;
-
+        size_t   lda, ldb, ldc, ldd, strideA, strideB, strideC, strideD;
         int solution_idx = -1;
 
         try
         {
 
             // TODO: are any additional mapping parameters needed?
-
             b            = std::stol(entries[3]);
             m            = std::stol(entries[4]);
             n            = std::stol(entries[5]);
             k            = std::stol(entries[6]);
+            lda          = std::stol(entries[8]);
+            strideA      = std::stol(entries[9]);
+            ldb          = std::stol(entries[11]);
+            strideB      = std::stol(entries[12]);
+            ldc          = std::stol(entries[13]);
+            strideC      = std::stol(entries[14]);
+            ldd          = std::stol(entries[15]);
+            strideD      = std::stol(entries[16]);
             inputTypeA   = hipDataType_to_tensile_type(string_to_hip_datatype(entries[17]));
             inputTypeB   = hipDataType_to_tensile_type(string_to_hip_datatype(entries[18]));
             outputType   = hipDataType_to_tensile_type(string_to_hip_datatype(entries[19]));
@@ -111,8 +118,24 @@ namespace TensileLite
             return std::make_pair(ProblemOverride{}, -1);
         }
 
-        ProblemOverride po(
-            transA, transB, inputTypeA, inputTypeB, computeType, outputType, m, n, k, b);
+        ProblemOverride po(transA,
+                           transB,
+                           inputTypeA,
+                           inputTypeB,
+                           computeType,
+                           outputType,
+                           m,
+                           n,
+                           k,
+                           b,
+                           lda,
+                           ldb,
+                           ldc,
+                           ldd,
+                           strideA,
+                           strideB,
+                           strideC,
+                           strideD);
 
         return std::make_pair(po, solution_idx);
     }
@@ -128,6 +151,14 @@ namespace TensileLite
         , m_n(0)
         , m_k(0)
         , m_batchSize(0)
+        , m_lda(0)
+        , m_ldb(0)
+        , m_ldc(0)
+        , m_ldd(0)
+        , m_strideA(0)
+        , m_strideB(0)
+        , m_strideC(0)
+        , m_strideD(0)
     {
     }
 
@@ -140,7 +171,15 @@ namespace TensileLite
                                      size_t   m,
                                      size_t   n,
                                      size_t   k,
-                                     size_t   batchSize)
+                                     size_t   batchSize,
+                                     size_t   lda,
+                                     size_t   ldb,
+                                     size_t   ldc,
+                                     size_t   ldd,
+                                     size_t   strideA,
+                                     size_t   strideB,
+                                     size_t   strideC,
+                                     size_t   strideD)
         : m_transA(transA)
         , m_transB(transB)
         , m_inputTypeA(inputTypeA)
@@ -151,6 +190,14 @@ namespace TensileLite
         , m_n(n)
         , m_k(k)
         , m_batchSize(batchSize)
+        , m_lda(lda)
+        , m_ldb(ldb)
+        , m_ldc(ldc)
+        , m_ldd(ldd)
+        , m_strideA(strideA)
+        , m_strideB(strideB)
+        , m_strideC(strideC)
+        , m_strideD(strideD)
     {
     }
 
@@ -167,6 +214,14 @@ namespace TensileLite
         m_n           = problem.n();
         m_k           = problem.k();
         m_batchSize   = problem.batchSize();
+        m_lda         = problem.lda();
+        m_ldb         = problem.ldb();
+        m_ldc         = problem.ldc();
+        m_ldd         = problem.ldd();
+        m_strideA     = problem.strideA();
+        m_strideB     = problem.strideB();
+        m_strideC     = problem.strideC();
+        m_strideD     = problem.strideD();
     }
 
 };
