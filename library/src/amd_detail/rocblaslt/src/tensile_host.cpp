@@ -2265,7 +2265,15 @@ TensileLite::ProblemOverride
                                         problem.m,
                                         problem.n,
                                         problem.k,
-                                        problem.batch_count);
+                                        problem.batch_count,
+                                        problem.col_stride_a,
+                                        problem.col_stride_b,
+                                        problem.col_stride_c,
+                                        problem.col_stride_d,
+                                        problem.batch_stride_a,
+                                        problem.batch_stride_b,
+                                        problem.batch_stride_c,
+                                        problem.batch_stride_d);
 }
 
 TensileLite::ProblemOverride TensileDataGemm2ProblemOverride(std::shared_ptr<void> gemmData)
@@ -2281,7 +2289,15 @@ TensileLite::ProblemOverride TensileDataGemm2ProblemOverride(std::shared_ptr<voi
                                         data->problem.freeSizeA(0),
                                         data->problem.freeSizeB(0),
                                         data->problem.boundSize(0),
-                                        data->problem.batchSize(0));
+                                        data->problem.batchSize(0),
+                                        data->problem.a().strides()[1],
+                                        data->problem.b().strides()[1],
+                                        data->problem.c().strides()[1],
+                                        data->problem.d().strides()[1],
+                                        data->problem.a().strides()[2],
+                                        data->problem.b().strides()[2],
+                                        data->problem.c().strides()[2],
+                                        data->problem.d().strides()[2]);
 }
 
 void initTensileGemmData(rocblaslt_handle       handle,

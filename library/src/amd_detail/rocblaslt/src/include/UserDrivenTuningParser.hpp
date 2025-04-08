@@ -56,7 +56,15 @@ namespace TensileLite
                         size_t   m,
                         size_t   n,
                         size_t   k,
-                        size_t   batchSize);
+                        size_t   batchSize,
+                        size_t   lda,
+                        size_t   ldb,
+                        size_t   ldc,
+                        size_t   ldd,
+                        size_t   strideA,
+                        size_t   strideB,
+                        size_t   strideC,
+                        size_t   strideD);
         ProblemOverride(const ProblemOverride& problem);
 
         inline bool transA() const
@@ -99,6 +107,38 @@ namespace TensileLite
         {
             return m_batchSize;
         }
+        inline size_t lda() const
+        {
+            return m_lda;
+        }
+        inline size_t ldb() const
+        {
+            return m_ldb;
+        }
+        inline size_t ldc() const
+        {
+            return m_ldc;
+        }
+        inline size_t ldd() const
+        {
+            return m_ldd;
+        }
+        inline size_t strideA() const
+        {
+            return m_strideA;
+        }
+        inline size_t strideB() const
+        {
+            return m_strideB;
+        }
+        inline size_t strideC() const
+        {
+            return m_strideC;
+        }
+        inline size_t strideD() const
+        {
+            return m_strideD;
+        }
 
     private:
         bool     m_transA;
@@ -111,6 +151,14 @@ namespace TensileLite
         size_t   m_n;
         size_t   m_k;
         size_t   m_batchSize;
+        size_t   m_lda;
+        size_t   m_ldb;
+        size_t   m_ldc;
+        size_t   m_ldd;
+        size_t   m_strideA;
+        size_t   m_strideB;
+        size_t   m_strideC;
+        size_t   m_strideD;
     };
 
     std::pair<ProblemOverride, int> problemFromEntries(const std::vector<std::string>& entries);
@@ -146,7 +194,23 @@ namespace TensileLite
                                         lhs.k(),
                                         rhs.k(),
                                         lhs.batchSize(),
-                                        rhs.batchSize());
+                                        rhs.batchSize(),
+                                        lhs.lda(),
+                                        rhs.lda(),
+                                        lhs.ldb(),
+                                        rhs.ldb(),
+                                        lhs.ldc(),
+                                        rhs.ldc(),
+                                        lhs.ldd(),
+                                        rhs.ldd(),
+                                        lhs.strideA(),
+                                        rhs.strideA(),
+                                        lhs.strideB(),
+                                        rhs.strideB(),
+                                        lhs.strideC(),
+                                        rhs.strideC(),
+                                        lhs.strideD(),
+                                        rhs.strideD());
         }
     };
 
@@ -220,7 +284,15 @@ namespace std
                                              po.m(),
                                              po.n(),
                                              po.k(),
-                                             po.batchSize());
+                                             po.batchSize(),
+                                             po.lda(),
+                                             po.ldb(),
+                                             po.ldc(),
+                                             po.ldd(),
+                                             po.strideA(),
+                                             po.strideB(),
+                                             po.strideC(),
+                                             po.strideD());
         }
     };
 } // namespace std
