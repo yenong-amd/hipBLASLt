@@ -1045,6 +1045,10 @@ class Solution(collections.abc.Mapping):
       if isaInfoMap[isa].archCaps["HasF32XEmulation"]:
         state["UseF32XEmulation"] = True
 
+    # initial info to be exported for solution prediction
+    state["CUOccupancy"]            = -1
+    state["MathClocksUnrolledLoop"] = 0
+
     Solution.assignProblemIndependentDerivedParameters(state, printRejectionReason, isaInfoMap)
 
     if "AssignedDerivedParameters" in state:
@@ -1474,10 +1478,7 @@ class Solution(collections.abc.Mapping):
 
     # DepthU == -1?
     if state["DepthU"] == -1:
-      if state["ProblemType"]["ComputeDataType"].numBytes() < 4:
-        depthuList = [256, 128, 64, 32]
-      else:
-        depthuList = [128, 64, 32, 16]
+      depthuList = [1024,512,256,128,64,32,16]
     else:
       depthuList = [state["DepthU"]]
     index = [0]

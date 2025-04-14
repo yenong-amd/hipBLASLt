@@ -23,13 +23,38 @@
 #pragma once
 #include <string>
 
-typedef enum
+enum class DataType : int
+{
+    Float,
+    Double,
+    ComplexFloat,
+    ComplexDouble,
+    Half,
+    Int8x4,
+    Int32,
+    BFloat16,
+    Int8,
+    Int64,
+    XFloat32,
+    Float8_fnuz,
+    BFloat8_fnuz,
+    Float8BFloat8_fnuz,
+    BFloat8Float8_fnuz,
+    Float8,
+    BFloat8,
+    Float8BFloat8,
+    BFloat8Float8,
+    Count,
+    None = Count
+};
+
+enum class SignatureValueKind : int
 {
     SIG_VALUE        = 1,
     SIG_GLOBALBUFFER = 2
-} SignatureValueKind;
+};
 
-typedef enum
+enum class InstType : int
 {
     INST_F8         = 1,
     INST_F16        = 2,
@@ -70,9 +95,9 @@ typedef enum
     INST_CVT        = 37,
     INST_MACRO      = 38,
     INST_NOTYPE     = 39
-} InstType;
+};
 
-typedef enum
+enum class SelectBit : int
 {
     SEL_NONE = 0,
     DWORD    = 1,
@@ -82,17 +107,17 @@ typedef enum
     BYTE_3   = 5,
     WORD_0   = 6,
     WORD_1   = 7
-} SelectBit;
+};
 
-typedef enum
+enum class UnusedBit : int
 {
     UNUSED_NONE     = 0,
     UNUSED_PAD      = 1,
     UNUSED_SEXT     = 2,
     UNUSED_PRESERVE = 3
-} UnusedBit;
+};
 
-typedef enum
+enum class CvtType : int
 {
     CVT_F16_to_F32          = 1,
     CVT_F32_to_F16          = 2,
@@ -118,31 +143,79 @@ typedef enum
     CVT_SCALEF32_SR_BF8_F16 = 22,
     CVT_BF16_to_F32         = 23,
     CVT_PK_F32_to_BF16      = 24
-} CvtType;
+};
 
-typedef enum
+enum class RoundType : int
 {
     ROUND_UP              = 0,
     ROUND_TO_NEAREST_EVEN = 1
-} RoundType;
+};
+
+inline std::string toString(DataType type)
+{
+    switch(type)
+    {
+    case DataType::Float:
+        return "Float";
+    case DataType::Double:
+        return "Double";
+    case DataType::ComplexFloat:
+        return "ComplexFloat";
+    case DataType::ComplexDouble:
+        return "ComplexDouble";
+    case DataType::Half:
+        return "Half";
+    case DataType::Int8x4:
+        return "Int8x4";
+    case DataType::Int32:
+        return "Int32";
+    case DataType::BFloat16:
+        return "BFloat16";
+    case DataType::Int8:
+        return "Int8";
+    case DataType::Int64:
+        return "Int64";
+    case DataType::XFloat32:
+        return "XFloat32";
+    case DataType::Float8_fnuz:
+        return "Float8_fnuz";
+    case DataType::BFloat8_fnuz:
+        return "BFloat8_fnuz";
+    case DataType::Float8BFloat8_fnuz:
+        return "Float8BFloat8_fnuz";
+    case DataType::BFloat8Float8_fnuz:
+        return "BFloat8Float8_fnuz";
+    case DataType::Float8:
+        return "Float8";
+    case DataType::BFloat8:
+        return "BFloat8";
+    case DataType::Float8BFloat8:
+        return "Float8BFloat8";
+    case DataType::BFloat8Float8:
+        return "BFloat8Float8";
+    default:
+        return "Invalid";
+    }
+    return "Invalid";
+}
 
 inline std::string toString(SelectBit bit)
 {
     switch(bit)
     {
-    case DWORD:
+    case SelectBit::DWORD:
         return "DWORD";
-    case BYTE_0:
+    case SelectBit::BYTE_0:
         return "BYTE_0";
-    case BYTE_1:
+    case SelectBit::BYTE_1:
         return "BYTE_1";
-    case BYTE_2:
+    case SelectBit::BYTE_2:
         return "BYTE_2";
-    case BYTE_3:
+    case SelectBit::BYTE_3:
         return "BYTE_3";
-    case WORD_0:
+    case SelectBit::WORD_0:
         return "WORD_0";
-    case WORD_1:
+    case SelectBit::WORD_1:
         return "WORD_1";
     default:
         return "";
@@ -153,11 +226,11 @@ inline std::string toString(UnusedBit bit)
 {
     switch(bit)
     {
-    case UNUSED_PAD:
+    case UnusedBit::UNUSED_PAD:
         return "UNUSED_PAD";
-    case UNUSED_SEXT:
+    case UnusedBit::UNUSED_SEXT:
         return "UNUSED_SEXT";
-    case UNUSED_PRESERVE:
+    case UnusedBit::UNUSED_PRESERVE:
         return "UNUSED_PRESERVE";
     default:
         return "";

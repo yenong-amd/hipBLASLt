@@ -24,17 +24,17 @@
 
 from rocisa import rocIsa, countInstruction, countGlobalRead, \
             countLocalRead, countLocalWrite, countDSStoreB256
-from rocisa.code import StructuredModule, ValueSet, RegSet
+from rocisa.code import Module, TextBlock, StructuredModule, KernelBody
 from rocisa.container import RegisterContainer
 from rocisa.label import LabelManager
+from rocisa.asmpass import rocIsaPass, rocIsaPassOption
+from rocisa.instruction import SLongBranchPositive
 from .TensileInstructions import replaceHolder, \
-                          KernelBody, Module, TextBlock, Dump, \
-                          RegisterPool, Assert, TensileInstructionsPassOptions, \
-                          TensileInstructionsPass, \
-                          SLongBranchPositive, SBranch, SCBranchSCC0, SCBranchSCC1
+                          Dump, RegisterPool, Assert, \
+                          SBranch, SCBranchSCC0, SCBranchSCC1
 from .TensileInstructions.Instructions import *
 from .KernelWriterModules import *
-from .TensilePass import TensilePass, TensilePassOptions
+from .TensilePass import TensilePass, TensilePassOptions, TensilePassGetCycles
 from .Component import Component, LraTileProperties
 from .Components.Signature import UserArgumentsInfo
 from .SolutionStructs import Solution, isPackedIndex
@@ -3237,8 +3237,11 @@ class KernelWriter(metaclass=abc.ABCMeta):
 
     # Tensile pass
     tpo = TensilePassOptions()
-    tpo.removeDupActFunc = kernel["ActivationFuncCall"]
+    tpo.removeDupActFunc    = kernel["ActivationFuncCall"]
+    tpo.calculateMathClocks = True
+    numWaves                = kernel["NumThreads"] // kernel["WavefrontSize"]
     TensilePass(module, tpo)
+    kernel["MathClocksUnrolledLoop"] = TensilePassGetCycles(module, tpo, numWaves)
     # Add a label at the end of the asm for indexing.
     module.add(Label("ASM_End", "The end of the kernel"))
 
@@ -3248,10 +3251,10 @@ class KernelWriter(metaclass=abc.ABCMeta):
     # Tensile instruction pass, temporarily disable due to build time.
     # Kernels with epilog especially with activation is too long (50000~ lines).
     # Need to refactor global write elements.
-    tipo = TensileInstructionsPassOptions()
+    ripo = rocIsaPassOption()
     if kernel["ProblemType"]["ActivationType"] == "all":
-      tipo.removeDupAssign = False
-    TensileInstructionsPass(moduleKernelBody, tipo)
+      ripo.removeDupAssign = False
+    rocIsaPass(moduleKernelBody, ripo)
 
     error = self.states.overflowedResources
     print2(f"  found error code {error} with overflowed resources set to {self.states.overflowedResources}")
