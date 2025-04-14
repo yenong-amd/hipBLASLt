@@ -21,7 +21,7 @@ namespace TensileLite
 
             const auto verion      = "Git Version";
             const auto delim       = ',';
-            const int  max_entries = 37;
+            const int  max_entries = 38;
 
             while(std::getline(file_read, line))
             {
@@ -57,6 +57,7 @@ namespace TensileLite
                     }
                 }
             }
+            std::cout << "override size " << m_override.size() << std::endl;
         }
     }
 
@@ -64,7 +65,7 @@ namespace TensileLite
     {
 
         const size_t entries_n = entries.size();
-        if(entries_n != 37)
+        if(entries_n != 38)
         {
             return std::make_pair(ProblemOverride{}, -1);
         }
@@ -101,7 +102,7 @@ namespace TensileLite
             inputTypeB   = hipDataType_to_tensile_type(string_to_hip_datatype(entries[18]));
             outputType   = hipDataType_to_tensile_type(string_to_hip_datatype(entries[19]));
             computeType  = hipDataType_to_tensile_type(string_to_hip_datatype(entries[21]));
-            solution_idx = std::stoi(entries[34]);
+            solution_idx = std::stoi(entries[35]);
         }
         catch(std::invalid_argument const& ex)
         {
