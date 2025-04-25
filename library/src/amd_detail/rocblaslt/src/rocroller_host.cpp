@@ -120,13 +120,13 @@ struct SolutionParameters
     unsigned int unrollX = 0;
     unsigned int unrollY = 0;
 
-    std::string scheduler;
+    std::string scheduler = "Priority";
 
     bool streamK        = false;
     bool streamKTwoTile = false;
 
-    bool loadLDSScaleA = false;
-    bool loadLDSScaleB = false;
+    bool loadLDSScaleA = true;
+    bool loadLDSScaleB = true;
 };
 
 /**
@@ -638,6 +638,37 @@ std::string genKernelName(std::shared_ptr<SolutionParameters> gemm)
     return rv.str();
 }
 
+std::ostream& operator<<(std::ostream& s, SolutionParameters const& x)
+{
+    if(x.streamK)
+    {
+        s << "Algorithm: StreamK twoTile:" << x.streamKTwoTile << std::endl;
+    }
+    else
+    {
+        s << "Algorithm: DataParallel" << std::endl;
+    }
+    s << "Tiling:    " << x.workgroupTile.m << "x" << x.workgroupTile.n << "x" << x.workgroupTile.k << std::endl;
+    s << "MI:        " << x.machineInstruction.m << "x" << x.machineInstruction.n << "x" << x.machineInstruction.k << "x" << x.machineInstruction.b
+      << std::endl;
+    s << "Scaling:   A:" << x.kernelType.scaleAMode << " B:" << x.kernelType.scaleBMode << std::endl;
+    // s << "SwizzleScale:        " << x.swizzleScale << std::endl;
+    s << "LDS:       " << x.loadLDSA << x.loadLDSB << x.storeLDSD << std::endl;
+    // s << "Direct2LDS:       " << x.direct2LDSA << x.direct2LDSB << std::endl;
+    s << "LSDScale:  " << x.loadLDSScaleA << x.loadLDSScaleB << std::endl;
+    s << "Prefetch:  "
+      << "enabled:" << x.prefetch << " inflight:" << x.prefetchInFlight
+      << " LDS:" << x.prefetchLDSFactor << std::endl;
+    s << "Unroll:    X:" << x.unrollX << " Y:" << x.unrollY << std::endl;
+    s << "Scheduler: " << x.scheduler << std::endl;
+    s << "WG size:   X:" << x.workgroupSizeX << " Y:" << x.workgroupSizeY << std::endl;
+    s << "Type:      A:" << x.kernelType.typeA << " B:" << x.kernelType.typeB << " C:" << x.kernelType.typeC
+      << " D:" << x.kernelType.typeD << " ACC:" << x.kernelType.typeAcc << std::endl;
+    s << "Transpose:  " << rocblaslt_transpose_letter(x.kernelType.transA) << rocblaslt_transpose_letter(x.kernelType.transB) << std::endl;
+    // s << "Version:   " << x.version << std::endl;
+    return s;
+}
+
 /**
  * @brief Generate a GEMM Kernel
  *
@@ -991,7 +1022,7 @@ rocblaslt_status
         std::cerr << e.what() << '\n';
         return rocblaslt_status_not_implemented;
     }
-
+    std::cout << *params << std::endl;
     return rocblaslt_status_success;
 }
 
