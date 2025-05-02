@@ -121,6 +121,7 @@ struct SolutionParameters
     unsigned int unrollY = 0;
 
     std::string scheduler = "Priority";
+    bool matchMemoryAccess = true;
 
     bool streamK        = false;
     bool streamKTwoTile = false;
@@ -534,6 +535,11 @@ std::shared_ptr<SolutionParameters>
         gemm->loadLDSScaleA = false;
     if(numScaleElementsB % workgroupSize != 0)
         gemm->loadLDSScaleB = false;
+    // Unequal loadLDSScale caused floating point exception in LoadPacked
+    if(gemm->loadLDSScaleA != gemm->loadLDSScaleB){
+        gemm->loadLDSScaleA = false;
+        gemm->loadLDSScaleB = false;
+    }
 
     return gemm;
 }
@@ -963,7 +969,9 @@ std::shared_ptr<GemmKernel> genGemmKernel(std::shared_ptr<SolutionParameters> ge
                            / wavetilePerWavefrontM),
          static_cast<uint>(gemm->workgroupTile.n / gemm->machineInstruction.n
                            / wavetilePerWavefrontN)});
-
+    std::cout << "------------CommandParameters------------\n";
+    std::cout << params->toString();
+    std::cout << "------------------------\n";
     // -------------------------------------------------------------
     // Create CommandKernel
 
