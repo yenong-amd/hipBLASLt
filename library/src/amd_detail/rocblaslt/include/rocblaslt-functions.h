@@ -306,6 +306,9 @@ std::string rocblaslt_get_kernel_name_from_algo(rocblaslt_handle             han
 std::string rocblaslt_get_solution_name_from_algo(rocblaslt_handle             handle,
                                                   const rocblaslt_matmul_algo& algo);
 
+std::string rocblaslt_get_rr_kernel_name_from_algo(rocblaslt_handle             handle,
+                                                   const rocblaslt_matmul_algo& algo);
+
 #endif
 
 #endif /* _ROCBLASLT_FUNCTIONS_H_ */

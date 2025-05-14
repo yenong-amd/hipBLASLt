@@ -27,6 +27,7 @@
 #include "definitions.h"
 #include "handle.h"
 #include "rocblaslt_mat_utils.hpp"
+#include "rocroller_host.hpp"
 #include "tensile_host.hpp"
 #include <array>
 
@@ -1808,4 +1809,10 @@ std::string rocblaslt_get_solution_name_from_algo(rocblaslt_handle             h
                                                   const rocblaslt_matmul_algo& algo)
 {
     return getSolutionNameFromAlgoIndex(handle, algo);
+}
+
+std::string rocblaslt_get_rr_kernel_name_from_algo(rocblaslt_handle             handle,
+                                                   const rocblaslt_matmul_algo& algo)
+{
+    return getRocRollerKernelNameFromAlgoIndex(handle, algo);
 }

@@ -179,8 +179,10 @@ if(USE_ROCROLLER)
   set(CMAKE_VISIBILITY_INLINES_HIDDEN ON)
   FetchContent_Declare(
     rocRoller
-    GIT_REPOSITORY https://github.com/ROCm/rocRoller.git
-    GIT_TAG d78b07d8eabd493bb376d4c99c79a4b43363d715
+    GIT_REPOSITORY git@github.amd.com:ROCm/rocRoller.git
+    GIT_TAG 44f3fc44805669a44e9d0ad8eaff7a0af1238889
+    # squiring/gfx950-d2lds-perf-exploration
+    # GIT_TAG b2c1eeb49d7e3193c31ed9134708cbbbcc4cbc5e 
   )
   FetchContent_MakeAvailable(rocRoller)
   target_link_libraries(hipblaslt PRIVATE rocroller_interface)

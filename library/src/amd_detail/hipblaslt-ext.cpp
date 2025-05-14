@@ -1623,7 +1623,13 @@ namespace hipblaslt_ext
     std::string getSolutionNameFromAlgo(hipblasLtHandle_t handle, hipblasLtMatmulAlgo_t& algo)
     {
         int* algo_ptr = (int*)algo.data;
-        if(*algo_ptr < 0)
+        if(*algo_ptr < -1)
+        {
+            std::cout << "hipblaslt-ext getSolutionNameFromAlgo " << *algo_ptr << std::endl;
+            auto rocalgo = reinterpret_cast<const rocblaslt_matmul_algo*>(&algo);
+            return rocblaslt_get_rr_kernel_name_from_algo((rocblaslt_handle)handle, *rocalgo);
+        }
+        else if(*algo_ptr < 0)
         {
             return "";
         }
@@ -1634,7 +1640,13 @@ namespace hipblaslt_ext
     std::string getKernelNameFromAlgo(hipblasLtHandle_t handle, hipblasLtMatmulAlgo_t& algo)
     {
         int* algo_ptr = (int*)algo.data;
-        if(*algo_ptr < 0)
+        if(*algo_ptr < -1)
+        {
+            std::cout << "hipblaslt-ext getKernelNameFromAlgo " << *algo_ptr << std::endl;
+            auto rocalgo = reinterpret_cast<const rocblaslt_matmul_algo*>(&algo);
+            return rocblaslt_get_rr_kernel_name_from_algo((rocblaslt_handle)handle, *rocalgo);
+        }
+        else if(*algo_ptr < 0)
         {
             return "";
         }

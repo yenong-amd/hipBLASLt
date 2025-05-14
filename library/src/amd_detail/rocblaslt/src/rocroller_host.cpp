@@ -197,7 +197,8 @@ struct RocRollerHandle
     // The second level of the map is indexed with a hash value of a
     // SolutionIndexParameters type.
     // The value is a GemmKernel.
-    std::map<KernelType, std::map<int, std::shared_ptr<GemmKernel>>> generatedKernels;
+    // std::map<KernelType, std::map<int, std::shared_ptr<GemmKernel>>> generatedKernels;
+    std::map<int, std::shared_ptr<GemmKernel>> generatedKernels;
 };
 
 /**
@@ -1053,7 +1054,7 @@ rocblaslt_status
     try
     {
         kernel                                                        = genGemmKernel(params);
-        rocroller_handle->generatedKernels[kernelType][solutionIndex] = kernel;
+        rocroller_handle->generatedKernels[solutionIndex]             = kernel;
     }
     catch(const std::exception& e)
     {
@@ -1094,7 +1095,7 @@ rocblaslt_status
 {
     RocRollerHandle* rocroller_handle = static_cast<RocRollerHandle*>(handle->rocroller_handle);
     auto             kernelType       = genKernelType(prob);
-    int              index;
+    int              index            = -1;
 
     if(prob.bias != nullptr)
     {
@@ -1122,10 +1123,10 @@ rocblaslt_status
         return rocblaslt_status_invalid_value;
     }
 
-    auto existingKernelType = rocroller_handle->generatedKernels.find(kernelType);
+    auto existingKernelType = rocroller_handle->generatedKernels.find(index);
     if(existingKernelType == rocroller_handle->generatedKernels.end())
     {
-        rocroller_handle->generatedKernels[kernelType] = {};
+        rocroller_handle->generatedKernels = {};
     }
 
     auto solutionIndexParameters
@@ -1138,9 +1139,9 @@ rocblaslt_status
             break;
 
         index = static_cast<int>(std::hash<SolutionIndexParameters>{}(solutionIndexParameter));
-        auto existingSolutionIndex = rocroller_handle->generatedKernels[kernelType].find(index);
+        auto existingSolutionIndex = rocroller_handle->generatedKernels.find(index);
         // If kernel doesn't already exist, generate it
-        if(existingSolutionIndex == rocroller_handle->generatedKernels[kernelType].end())
+        if(existingSolutionIndex == rocroller_handle->generatedKernels.end())
         {
             std::shared_ptr<GemmKernel> kernel;
             auto                        status = genKernelFromSolutionIndexParameters(
@@ -1151,6 +1152,8 @@ rocblaslt_status
 
         // Fill out heuristicResultsArray
         // The most important thing to do is set the solutionIndex
+        std::cout << "rocroller_host index " << index << std::endl;
+
         memset(heuristicResultsArray[i].algo.data, 0, sizeof(heuristicResultsArray[i].algo.data));
         int* solutionIndex = (int*)(heuristicResultsArray[i].algo.data);
         *solutionIndex     = index;
@@ -1300,16 +1303,17 @@ rocblaslt_status getKernelFromAlgo(rocblaslt_handle                   handle,
     RocRollerHandle* rocroller_handle = static_cast<RocRollerHandle*>(handle->rocroller_handle);
     auto             kernelType       = genKernelType(prob);
 
-    auto existingKernelType = rocroller_handle->generatedKernels.find(kernelType);
-    // If KernelType doesn't exist yet, add an empty container for it to map.
-    if(existingKernelType == rocroller_handle->generatedKernels.end())
-    {
-        rocroller_handle->generatedKernels[kernelType] = {};
-        existingKernelType = rocroller_handle->generatedKernels.find(kernelType);
-    }
+    // auto existingKernelType = rocroller_handle->generatedKernels.find(kernelType);
+    // // If KernelType doesn't exist yet, add an empty container for it to map.
+    // if(existingKernelType == rocroller_handle->generatedKernels.end())
+    // {
+    //     rocroller_handle->generatedKernels[kernelType] = {};
+    //     existingKernelType = rocroller_handle->generatedKernels.find(kernelType);
+    // }
 
-    auto existingKernel = existingKernelType->second.find(*solutionIndex);
-    if(existingKernel != existingKernelType->second.end())
+    // auto existingKernel = existingKernelType->second.find(*solutionIndex);
+    auto existingKernel = rocroller_handle->generatedKernels.find(*solutionIndex);
+    if(existingKernel != rocroller_handle->generatedKernels.end())
     {
         kernel = existingKernel->second;
         return rocblaslt_status_success;
@@ -1322,6 +1326,17 @@ rocblaslt_status getKernelFromAlgo(rocblaslt_handle                   handle,
             rocroller_handle, kernelType, solutionIndexParameter, *solutionIndex, kernel);
         return status;
     }
+}
+
+std::string getRocRollerKernelNameFromAlgoIndex(rocblaslt_handle             handle,
+                                                const rocblaslt_matmul_algo& algo)
+{
+    int*             solutionIndex    = (int*)algo.data;
+    RocRollerHandle* rocroller_handle = static_cast<RocRollerHandle*>(handle->rocroller_handle);
+    auto             existingKernel   = rocroller_handle->generatedKernels.find(*solutionIndex);
+    if(existingKernel != rocroller_handle->generatedKernels.end())
+        return existingKernel->second->commandKernel->getKernelName();
+    return "";
 }
 
 rocblaslt_status isRocRollerSolutionSupported(rocblaslt_handle             handle,

@@ -64,6 +64,9 @@ void getRocRollerSolutionsFromIndex(
     std::vector<rocblaslt_matmul_heuristic_result>& heuristicResults,
     size_t                                          maxWorkSpaceBytes);
 
+std::string getRocRollerKernelNameFromAlgoIndex(rocblaslt_handle             handle,
+                                                const rocblaslt_matmul_algo& algo);
+
 rocblaslt_status isRocRollerSolutionSupported(rocblaslt_handle             handle,
                                               RocblasltContractionProblem& prob,
                                               rocblaslt_matmul_algo*       algo,
