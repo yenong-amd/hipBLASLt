@@ -96,25 +96,6 @@ namespace TensileLite
                                                              bool   print,
                                                              size_t WGM);
 
-        std::vector<ResultTuple> sweep_macro_tile_sizes(size_t    M,
-                                                        size_t    N,
-                                                        size_t    K,
-                                                        bool      transA,
-                                                        bool      transB,
-                                                        Hardware& hardware,
-                                                        size_t    element_size = 2,
-                                                        size_t    max_MT_M     = 256,
-                                                        size_t    max_MT_N     = 256,
-                                                        size_t    max_MT_K     = 128,
-                                                        size_t    step_MT_M    = 32,
-                                                        size_t    step_MT_N    = 32,
-                                                        size_t    step_MT_K    = 32,
-                                                        double    H_L2         = 0.8,
-                                                        bool      debug        = false,
-                                                        const std::vector<TileTuple>& tiles_to_add
-                                                        = {},
-                                                        bool print = false);
-
         std::pair<double, size_t> select_best_wgm(
             size_t                     M,
             size_t                     N,

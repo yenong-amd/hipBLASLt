@@ -50,20 +50,16 @@ namespace TensileLite
                                            size_t                  max_iters);
 
         // Compute the number of matrix instructions required to compute a single MT_MXMT_NXMT_K tile.
-        size_t compute_number_matrix_instructions(const Hardware& hardware,
-                                                  size_t          MT_M,
-                                                  size_t          MT_N,
-                                                  size_t          MT_K,
-                                                  size_t          MI_M,
-                                                  size_t          MI_N,
-                                                  size_t          MI_K,
-                                                  bool            debug);
+        size_t compute_number_matrix_instructions(size_t MT_M,
+                                                  size_t MT_N,
+                                                  size_t MT_K,
+                                                  size_t MI_M,
+                                                  size_t MI_N,
+                                                  size_t MI_K,
+                                                  bool   debug);
 
         // Determine the compute latency per MT_MxMT_NxMT_K Macro Tile (L_MT).
         size_t compute_mt_compute_latency(const Hardware& hardware,
-                                          size_t          M,
-                                          size_t          N,
-                                          size_t          K,
                                           bool            transA,
                                           bool            transB,
                                           size_t          MT_M,
@@ -83,7 +79,6 @@ namespace TensileLite
                                     size_t          batch,
                                     size_t          MT_M,
                                     size_t          MT_N,
-                                    size_t          split,
                                     bool            debug);
 
         // Compute the amount of data loaded from A to produce a MT_MxMT_NxMT_K tile.
@@ -99,12 +94,14 @@ namespace TensileLite
         // Computes the number of active compute units if there is only one wave and it is partial
         // Otherwise, returns hardware.N_CU
         size_t compute_active_CU(
-            const Hardware& hardware, size_t M, size_t N, size_t MT_M, size_t MT_N);
+            const Hardware& hardware, size_t M, size_t N, size_t batch, size_t MT_M, size_t MT_N);
 
         double compute_memory_latency(const Hardware& hardware,
                                       size_t          M,
                                       size_t          N,
                                       size_t          K,
+                                      bool            transA,
+                                      bool            transB,
                                       size_t          batch,
                                       size_t          MT_M,
                                       size_t          MT_N,
@@ -213,6 +210,8 @@ namespace TensileLite
                                    size_t          N,
                                    size_t          K,
                                    size_t          batch,
+                                   bool            transA,
+                                   bool            transB,
                                    size_t          MT_M,
                                    size_t          MT_N,
                                    size_t          MT_K,

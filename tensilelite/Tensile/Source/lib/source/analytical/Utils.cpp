@@ -172,7 +172,6 @@ namespace TensileLite
 
             size_t max_hw_split = std::floor(hardware.N_CU / grid);
             size_t MAX_SPLIT    = std::min(biggest_allowable_split, max_hw_split);
-
             size_t best_split   = 1;
             double best_latency = std::numeric_limits<double>::infinity();
 

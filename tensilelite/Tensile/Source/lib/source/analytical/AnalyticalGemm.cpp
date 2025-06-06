@@ -52,14 +52,13 @@ namespace TensileLite
         }
 
         // Compute the number of matrix instructions required to compute a single MT_MXMT_NXMT_K tile.
-        size_t compute_number_matrix_instructions(const Hardware& hardware,
-                                                  size_t          MT_M,
-                                                  size_t          MT_N,
-                                                  size_t          MT_K,
-                                                  size_t          MI_M,
-                                                  size_t          MI_N,
-                                                  size_t          MI_K,
-                                                  bool            debug)
+        size_t compute_number_matrix_instructions(size_t MT_M,
+                                                  size_t MT_N,
+                                                  size_t MT_K,
+                                                  size_t MI_M,
+                                                  size_t MI_N,
+                                                  size_t MI_K,
+                                                  bool   debug)
         {
             // Compute the number of Matrix Instructions required in each dim
             size_t N_MI_M = safe_ceil_div(MT_M, MI_M);
@@ -82,9 +81,6 @@ namespace TensileLite
 
         // Determine the compute latency per MT_MxMT_NxMT_K Macro Tile (L_MT).
         size_t compute_mt_compute_latency(const Hardware& hardware,
-                                          size_t          M,
-                                          size_t          N,
-                                          size_t          K,
                                           bool            transA,
                                           bool            transB,
                                           size_t          MT_M,
@@ -99,8 +95,8 @@ namespace TensileLite
         {
 
             // Compute the number of matrix instructions
-            size_t N_MI = compute_number_matrix_instructions(
-                hardware, MT_M, MT_N, MT_K, MI_M, MI_N, MI_K, debug);
+            size_t N_MI
+                = compute_number_matrix_instructions(MT_M, MT_N, MT_K, MI_M, MI_N, MI_K, debug);
             // Latency of a single MT_MxMT_NxMT_k tile is the latency of one MI multiplied by number of MI per MT_MxMT_NxMT_k.
             size_t L_MI = hardware.get_MI_latency(
                 MI_M, MI_N, MI_K, std::max(element_size_A, element_size_B));
@@ -184,7 +180,6 @@ namespace TensileLite
                                     size_t          batch,
                                     size_t          MT_M,
                                     size_t          MT_N,
-                                    size_t          split,
                                     bool            debug)
         {
             // Compute number of MT_M in M
@@ -250,7 +245,7 @@ namespace TensileLite
 
         // limite achievable memory bandwidth based on active CUs
         // Matches the Python logic: bw_limite = active_cu*0.008 for active_cu<100, capped at 1.0.
-        double compute_bw_limite_from_occupancy(const Hardware& /*hardware*/, size_t active_cu)
+        double compute_bw_limite_from_occupancy(size_t active_cu)
         {
             double bw_limited = 1.0;
             if(active_cu < 100)
@@ -324,7 +319,7 @@ namespace TensileLite
             double L_mem_mem1 = (limited_mem1_bw > 0) ? (total_Ld / (limited_mem1_bw)) : 0.0;
 
             // 7) mem2‐limited from occupancy (Can't Issue enough load/stores)
-            double bw_limited = compute_bw_limite_from_occupancy(hardware, active_cu);
+            double bw_limited = compute_bw_limite_from_occupancy(active_cu);
 
             // 8) loads that reach each level
             double Ld_mem2 = (1.0 - H_mem1) * total_Ld;
@@ -455,9 +450,6 @@ namespace TensileLite
         {
             // 1) Compute per-tile latencies
             double L_compute = compute_mt_compute_latency(hardware,
-                                                          M,
-                                                          N,
-                                                          K,
                                                           transA,
                                                           transB,
                                                           MT_M,
@@ -568,7 +560,6 @@ namespace TensileLite
             // Compute grid dimensions
             int grid_m = static_cast<int>(safe_ceil_div(M, MT_M));
             int grid_n = static_cast<int>(safe_ceil_div(N, MT_N));
-            int grid_k = static_cast<int>(safe_ceil_div(K, MT_K));
 
             WGM = std::max(WGM, 1); // WGM can't be less than one.
 
@@ -650,9 +641,8 @@ namespace TensileLite
                                  int             MT_K,
                                  int             WGM)
         {
-            int grid_m = static_cast<int>(std::ceil(static_cast<double>(M) / MT_M));
-            int grid_n = static_cast<int>(std::ceil(static_cast<double>(N) / MT_N));
-            int grid_k = static_cast<int>(std::ceil(static_cast<double>(K) / MT_K));
+            int grid_m = static_cast<int>(safe_ceil_div(M, MT_M));
+            int grid_n = static_cast<int>(safe_ceil_div(N, MT_N));
 
             int num_cus = compute_active_CU(hardware, M, N, batch, MT_M, MT_N);
 
@@ -777,7 +767,7 @@ namespace TensileLite
             // double prologue_latency
             //     = compute_memory_latency(hardware, M, N, K, MT_M, MT_N, MT_K, H_mem1, debug);
             // Compute number of waves
-            size_t N_waves = compute_number_waves(hardware, M, N, batch, MT_M, MT_N, split, debug);
+            size_t N_waves = compute_number_waves(hardware, M, N, batch, MT_M, MT_N, debug);
             // Compute latency of a wave
             double L_wave = compute_wave_latency(hardware,
                                                  M,
