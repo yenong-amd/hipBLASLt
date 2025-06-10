@@ -3142,6 +3142,64 @@ namespace TensileLite
                                                      sizeMapping.workGroupMapping,
                                                      10);
         }
+        else if(pAMDGPU->skDynamicGrid == 6)
+        {
+            auto itersPerTile = max(1, problem.getItersPerTile(sizeMapping));
+            size_t skGrid = cuCount;
+            // More tiles than CUs
+            // Distribute tiles evenly across maximum number of CUs
+            // Split remaining tiles as evenly as possible for better caching
+            if(tiles > skGrid)
+            {
+                skGrid = tiles; // Fallback if no good fractional tile is found
+                // const std::vector<double> tileFractions = {0.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0, 1.0/2.0, 1.0};
+                // const std::vector<double> tileFractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0, 1.0};
+                const std::vector<double> tileFractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0};
+                size_t minEvenTiles = tiles / cuCount;
+                for(double frac: tileFractions)
+                {
+                    size_t fracGrid = (size_t)((tiles / (minEvenTiles + frac)) + 0.5);
+                    if(fracGrid <= cuCount)
+                    {
+                        skGrid = fracGrid;
+                        break;
+                    }
+                }
+            }
+            // Fewer tiles than CUs
+            // Split tiles evenly in k-dimension
+            // Attempt to maximize CU utilization, up to a peak number of splits
+            // Max splitting is currently constant, but should be dependant on K dimension
+            else if (tiles < skGrid)
+            {
+                float itersRatio = ((float)tiles)/((float)itersPerTile);
+                // Splitting tiles is not performant if there is a low ratio of tileCount to itersPerTile
+                if (itersPerTile <= 8 || itersRatio >= 8)
+                    skGrid = tiles;
+                else
+                {
+                    size_t CUsPerTile = skGrid / tiles;
+                    CUsPerTile = min(CUsPerTile, 8);
+                    skGrid = tiles * CUsPerTile;
+                    // Code to allow searching for even fractional splits
+                    // Disabled for now since it was not as performant for test cases searched so far
+                    // if(CUsPerTile < 8)
+                    // {
+                    //     const std::vector<double> cuFractions = {1.0/2.0, 1.0/3.0, 1.0/4.0};
+                    //     for(double frac: cuFractions)
+                    //     {
+                    //         size_t fracGrid = (size_t)((CUsPerTile + frac) * tiles);
+                    //         if(fracGrid <= cuCount)
+                    //         {
+                    //             skGrid = fracGrid;
+                    //             break;
+                    //         }
+                    //     }
+                    // }
+                }
+            }
+            return skGrid;
+        }
         // Limit the CUs Stream-K is launched on either max or the specified,
         // whichever is minimum.
         else if(pAMDGPU->skMaxCUs > 0)
