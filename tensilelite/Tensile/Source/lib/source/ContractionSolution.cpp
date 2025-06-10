@@ -700,7 +700,6 @@ namespace TensileLite
 
         if(sizeMapping.streamK != 0)
         {
-            assert(gsu == 1);
             auto tiles = problem.getNumTiles(sizeMapping, gsu);
 
             // Clamp minimum iters per tile to 1 to allow stream-k index calculation to work in case K==0
