@@ -9905,7 +9905,7 @@
       AssignedDerivedParameters: true
       Batched: true
       BetaOnlyUseBias: true
-      BiasDataTypeList: [0, 7]
+      BiasDataTypeList: [0, 4]
       BiasSrc: D
       ComplexConjugateA: false
       ComplexConjugateB: false
