@@ -43,6 +43,8 @@
 #include <cstdlib>
 #include <random>
 
+#include <stdio.h>
+
 #ifdef ENABLE_ROCTX
 #include <roctracer/roctx.h>
 #endif
@@ -3145,21 +3147,26 @@ namespace TensileLite
         else if(pAMDGPU->skDynamicGrid == 6)
         {
             auto itersPerTile = max(1, problem.getItersPerTile(sizeMapping));
-            size_t skGrid = cuCount;
+            size_t skGrid = tiles; // Fallback if no good fractional tile is found
             // More tiles than CUs
             // Distribute tiles evenly across maximum number of CUs
             // Split remaining tiles as evenly as possible for better caching
-            if(tiles > skGrid)
+            if(tiles > cuCount)
             {
-                skGrid = tiles; // Fallback if no good fractional tile is found
+                size_t virtCUCount = cuCount;
+                if (sizeMapping.CUOccupancy > 1)
+                    virtCUCount *= sizeMapping.CUOccupancy;
                 // const std::vector<double> tileFractions = {0.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0, 1.0/2.0, 1.0};
                 // const std::vector<double> tileFractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0, 1.0};
                 const std::vector<double> tileFractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0};
-                size_t minEvenTiles = tiles / cuCount;
+                size_t minEvenTiles = tiles / virtCUCount;
                 for(double frac: tileFractions)
                 {
                     size_t fracGrid = (size_t)((tiles / (minEvenTiles + frac)) + 0.5);
-                    if(fracGrid <= cuCount)
+                    // Check if higher occupancy would cause excessive workspace requirements (set current limit to 128MB)
+                    if((tiles % fracGrid != 0) && (partialTileSize(fracGrid) > 128*1024*1024))
+                        continue;
+                    if(fracGrid <= virtCUCount)
                     {
                         skGrid = fracGrid;
                         break;
@@ -3170,32 +3177,18 @@ namespace TensileLite
             // Split tiles evenly in k-dimension
             // Attempt to maximize CU utilization, up to a peak number of splits
             // Max splitting is currently constant, but should be dependant on K dimension
-            else if (tiles < skGrid)
+            else if (tiles < cuCount)
             {
-                float itersRatio = ((float)tiles)/((float)itersPerTile);
-                // Splitting tiles is not performant if there is a low ratio of tileCount to itersPerTile
-                if (itersPerTile <= 8 || itersRatio >= 8)
-                    skGrid = tiles;
-                else
+                const std::vector<int> tileFractions = {8, 6, 4, 3, 2, 1};
+                for(int frac: tileFractions)
                 {
-                    size_t CUsPerTile = skGrid / tiles;
-                    CUsPerTile = min(CUsPerTile, 8);
-                    skGrid = tiles * CUsPerTile;
-                    // Code to allow searching for even fractional splits
-                    // Disabled for now since it was not as performant for test cases searched so far
-                    // if(CUsPerTile < 8)
-                    // {
-                    //     const std::vector<double> cuFractions = {1.0/2.0, 1.0/3.0, 1.0/4.0};
-                    //     for(double frac: cuFractions)
-                    //     {
-                    //         size_t fracGrid = (size_t)((CUsPerTile + frac) * tiles);
-                    //         if(fracGrid <= cuCount)
-                    //         {
-                    //             skGrid = fracGrid;
-                    //             break;
-                    //         }
-                    //     }
-                    // }
+                    size_t splitGrid = tiles * frac;
+                    size_t itersPerCU = itersPerTile / frac;
+                    if(splitGrid <= cuCount && itersPerCU >= 8)
+                    {
+                        skGrid = splitGrid;
+                        break;
+                    }
                 }
             }
             return skGrid;
