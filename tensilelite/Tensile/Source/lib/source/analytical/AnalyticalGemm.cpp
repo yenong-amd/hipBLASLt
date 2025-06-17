@@ -881,7 +881,7 @@ namespace TensileLite
 
             //Bias towards dimensions divisible by 64 for 8-bit datatypes
             //This biases the other dimensions to being divisible by 64 bytes
-            if((MT_N > 64) && (N % 64 != 0) && (element_size_A == 8))
+            if((MT_N > 64) && (MT_N % 64 != 0) && (element_size_A == 8))
             {
                 total_latency = total_latency * 1.2;
             }
