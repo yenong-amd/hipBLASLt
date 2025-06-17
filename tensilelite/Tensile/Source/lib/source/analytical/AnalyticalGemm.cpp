@@ -174,6 +174,22 @@ namespace TensileLite
                 }
             }
 
+            bool lds_inefficiency_enable = false;
+            //Experimental
+            if(lds_inefficiency_enable)
+            {
+                //Loads per wave assuming 4 SIMD
+                size_t num_simd = 4;
+
+                size_t wave_tile_m = std::ceil((MT_M / MI_M) / num_simd);
+                size_t wave_tile_n = std::floor((MT_N / MI_N) / num_simd); //should floor
+
+                //Penalize Asymmetric Wave Tiles (We have to have asyymetry for some tiles to map over simd
+                if(wave_tile_m != wave_tile_n)
+                {
+                    L_MT = L_MT * 1.3;
+                }
+            }
             return L_MT;
         }
 
@@ -531,10 +547,10 @@ namespace TensileLite
             double L_tile_total = (L_tile_single * num_iter) + L_prologue + L_epilogue + L_WG_setup
                                   + (28 * num_iter); //Iteration branch latency
 
-            if(MT_K == 512)
-            {
-                L_tile_total *= 1.5;
-            }
+            // if(MT_K == 512)
+            // {
+            //     L_tile_total *= 1.5;
+            // }
 
             if(debug || Hardware::is_debug_enabled())
             {
@@ -806,6 +822,26 @@ namespace TensileLite
             {
                 hardware.print_debug_info();
             }
+
+            if(MT_M == 256 && MT_N == 256 && MT_K == 128)
+            {
+                //The kernel for this is more optimized
+                total_latency = total_latency * 0.8;
+            }
+
+            //Bias Model towards at least one dim being power of 2
+            bool MT_M_is_power_two = (MT_M > 0) && ((MT_M & (MT_M - 1)) == 0);
+            bool MT_N_is_power_two = (MT_N > 0) && ((MT_N & (MT_N - 1)) == 0);
+            if(!MT_M_is_power_two && !MT_N_is_power_two)
+            {
+                total_latency = total_latency * 1.5;
+            }
+
+            // if(MT_M_is_power_two && MT_N_is_power_two)
+            // {
+            //     total_latency = total_latency * 0.95;
+            // }
+
             return total_latency;
         }
 
