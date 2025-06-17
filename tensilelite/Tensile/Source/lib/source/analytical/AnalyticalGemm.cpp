@@ -817,8 +817,8 @@ namespace TensileLite
                                                  debug);
 
             //Check if tile size is bigger than problem dimension. Invalidate it if it's not MI dimension (smallest possible dimension)
-            double edge_waste_m = 1 - ((M % MT_M) / MT_M);
-            double edge_waste_n = 1 - ((N % MT_N) / MT_N);
+            double edge_waste_m = 1 - (static_cast<double>(M % MT_M) / MT_M);
+            double edge_waste_n = 1 - (static_cast<double>(N % MT_N) / MT_N);
             if(((MT_M > M && MT_M != MI_M && edge_waste_m > 0.5)
                 || (MT_N > N && MT_N != MI_N && edge_waste_n > 0.5))
                || (MT_K > K && MT_K != MI_K))
