@@ -70,6 +70,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "FreeSizeLibrary: getSolutionByIndex" << std::endl;
             std::shared_ptr<MySolution> solution;
             return solution;
         }
@@ -79,6 +81,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "FreeSizeLibrary: findBestSolution" << std::endl;
             std::shared_ptr<MySolution> solution;
             return solution;
         }
@@ -89,6 +93,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "FreeSizeLibrary: findAllSolutions" << std::endl;
             bool                    debug = Debug::Instance().printPropertyEvaluation();
             SolutionSet<MySolution> rv;
             if(searchType == SolutionLibrarySearchType::DEFAULT)
@@ -115,6 +121,8 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "FreeSizeLibrary: findAllSolutionsGroupedGemm" << std::endl;
             bool                    debug = Debug::Instance().printPropertyEvaluation();
             SolutionSet<MySolution> rv;
             if(searchType == SolutionLibrarySearchType::DEFAULT)
@@ -140,6 +148,8 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "FreeSizeLibrary: findTopSolutions" << std::endl;
             SolutionVector<MySolution> solutions;
             return solutions;
         }
@@ -149,6 +159,8 @@ namespace TensileLite
                                         Hardware const&               hardware,
                                         int                           numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "FreeSizeLibrary: findTopSolutionsGroupedGemm" << std::endl;
             SolutionVector<MySolution> solutions;
             return solutions;
         }

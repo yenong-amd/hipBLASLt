@@ -175,6 +175,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "CachingLibrary: getSolutionByIndex" << std::endl;
             return m_subLibrary->getSolutionByIndex(problem, hardware, index);
         }
 
@@ -183,6 +185,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "CachingLibrary: findBestSolution" << std::endl;
             try
             {
                 double cachedFitness = std::numeric_limits<double>::max();
@@ -213,6 +217,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "CachingLibrary: findAllSolutions" << std::endl;
             return m_subLibrary->findAllSolutions(problem, hardware, searchType);
         }
 
@@ -222,12 +228,16 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "CachingLibrary: findAllSolutionsGroupedGemm" << std::endl;
             return m_subLibrary->findAllSolutionsGroupedGemm(problems, hardware, searchType);
         }
 
         std::shared_ptr<MySolution> findSolutionInCache(MyProblem const& problem,
                                                         Hardware const&  hardware) const
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "CachingLibrary: findSolutionInCache" << std::endl;
             auto const& amdgpu = dynamic_cast<AMDGPU const&>(hardware);
 
             return std::get<std::shared_ptr<MySolution>>(m_cache.find(problem, amdgpu));
@@ -251,6 +261,8 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "CachingLibrary: findTopSolutions" << std::endl;
             try
             {
                 auto const&                amdgpu = dynamic_cast<AMDGPU const&>(hardware);
@@ -278,6 +290,8 @@ namespace TensileLite
                                         Hardware const&               hardware,
                                         int                           numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "CachingLibrary: findTopSolutionsGroupedGemm" << std::endl;
             try
             {
                 auto const&                amdgpu = dynamic_cast<AMDGPU const&>(hardware);

@@ -77,6 +77,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MLPClassificationLibrary: GetSolutionByIndex" << std::endl;
             const bool experimental = Debug::Instance().useExperimentalSelection();
             if(!experimental)
             {
@@ -95,6 +97,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MLPClassificationLibrary: findBestSolution" << std::endl;
             SolutionVector<MySolution>  solutions = findTopSolutions(problem, hardware, 1);
             std::shared_ptr<MySolution> solution  = nullptr;
             if(solutions.size() > 0)
@@ -108,6 +112,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MLPClassificationLibrary: findAllSolutions" << std::endl;
             const bool experimental = Debug::Instance().useExperimentalSelection();
             if(!experimental)
             {
@@ -127,6 +133,8 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MLPClassificationLibrary: findTopSolutions" << std::endl;
             std::vector<float> problemkey
                 = ProblemKey::keyForProblem<std::vector<float>, MyProblem, float>(
                     problem, this->probFeatures);
@@ -164,6 +172,8 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MLPClassificationLibrary: findTopSolutionsGroupedGemm" << std::endl;
             const bool experimental = Debug::Instance().useExperimentalSelection();
             if(!experimental)
             {
