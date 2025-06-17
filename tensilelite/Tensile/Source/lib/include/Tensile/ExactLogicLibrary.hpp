@@ -72,6 +72,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "ExactLogic: getSolutionByIndex" << std::endl;
             std::shared_ptr<MySolution> rv;
             const bool                  streamK = Debug::Instance().useExperimentalSelection() == 2;
 
@@ -96,6 +98,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "ExactLogic: findBestSolution" << std::endl;
             std::shared_ptr<MySolution> rv;
             const bool                  streamK = Debug::Instance().useExperimentalSelection() == 2;
 
@@ -127,6 +131,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "ExactLogic: findAllSolutions" << std::endl;
             SolutionSet<MySolution> rv;
             const bool              streamK = Debug::Instance().useExperimentalSelection() == 2;
 
@@ -151,6 +157,8 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "ExactLogic: findAllSolutionsGroupedGemm" << std::endl;
             SolutionSet<MySolution> rv;
 
             for(auto const& row : rows)
@@ -175,6 +183,8 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "ExactLogic: findTopSolutions" << std::endl;
             SolutionVector<MySolution> rv, solutions;
             const bool                 streamK = Debug::Instance().useExperimentalSelection() == 2;
 
@@ -207,8 +217,9 @@ namespace TensileLite
                                         Hardware const&               hardware,
                                         int                           numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "ExactLogic: findTopSolutionsGroupedGemm" << std::endl;
             SolutionVector<MySolution> rv, solutions;
-
             for(auto const& row : rows)
             {
                 if(row.first(problems[0], hardware))

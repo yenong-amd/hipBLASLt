@@ -187,6 +187,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "PlaceholderLibrary: GetSolutionByIndex" << std::endl;
             if(!library)
                 loadPlaceholderLibrary();
 
@@ -203,6 +205,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "PlaceholderLibrary: findBestSolution" << std::endl;
             if(!library)
                 loadPlaceholderLibrary();
 
@@ -226,6 +230,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "PlaceholderLibrary: findAllSolutions" << std::endl;
             if(!library)
             {
                 loadPlaceholderLibrary();
@@ -247,6 +253,8 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "PlaceholderLibrary: findAllSolutionsGroupedGemm" << std::endl;
             if(!library)
             {
                 loadPlaceholderLibrary();
@@ -266,6 +274,8 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "PlaceholderLibrary: findTopSolutions" << std::endl;
             if(!library)
             {
                 loadPlaceholderLibrary();
@@ -285,6 +295,8 @@ namespace TensileLite
                                         Hardware const&               hardware,
                                         int                           numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "PlaceholderLibrary: findTopSolutionsGroupedGemm" << std::endl;
             if(!library)
             {
                 loadPlaceholderLibrary();

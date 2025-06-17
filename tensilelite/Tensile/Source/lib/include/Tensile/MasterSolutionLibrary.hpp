@@ -95,6 +95,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MasterSolutionLibrary: getSolutionByIndex" << std::endl;
             if(solutions.find(index) == solutions.end())
             {
                 return std::shared_ptr<MySolution>();
@@ -111,6 +113,8 @@ namespace TensileLite
         virtual std::shared_ptr<MySolution> getSolutionByIndex(Hardware const& hardware,
                                                                const int       index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MasterSolutionLibrary: getSolutionByIndex" << std::endl;
             if(solutions.find(index) == solutions.end())
             {
                 return std::shared_ptr<MySolution>();
@@ -149,6 +153,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MasterSolutionLibrary: findBestSolution" << std::endl;
             if(Debug::Instance().printSolutionSelectionTime())
             {
                 auto start  = std::chrono::steady_clock::now();
@@ -213,6 +219,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MasterSolutionLibrary: findAllSolutions" << std::endl;
             return library->findAllSolutions(problem, hardware, searchType);
         }
 
@@ -222,6 +230,8 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MasterSolutionLibrary: findAllSolutionsGroupedGemm" << std::endl;
             return library->findAllSolutionsGroupedGemm(problems, hardware, searchType);
         }
 
@@ -229,6 +239,8 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MasterSolutionLibrary: findTopSolutions" << std::endl;
             if(Debug::Instance().printSolutionSelectionTime())
             {
                 auto   start  = std::chrono::steady_clock::now();
@@ -249,6 +261,8 @@ namespace TensileLite
                                         Hardware const&               hardware,
                                         int                           numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MasterSolutionLibrary: findTopSolutionsGroupedGemm" << std::endl;
             return library->findTopSolutionsGroupedGemm(problems, hardware, numSolutions);
         }
     };
