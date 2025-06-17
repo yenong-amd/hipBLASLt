@@ -827,7 +827,7 @@ namespace TensileLite
             }
 
             //Set a minimum number of K iterations (avoid big K tile on Skinny K)
-            if(safe_ceil_div(K, MT_K) < 4 and K > 128)
+            if(safe_ceil_div(K, MT_K) < 4 && K > 128)
             {
                 return std::numeric_limits<double>::max();
             }
