@@ -3148,6 +3148,11 @@ namespace TensileLite
         {
             auto itersPerTile = max(1, problem.getItersPerTile(sizeMapping));
             size_t skGrid = tiles; // Fallback if no good fractional tile is found
+            size_t batch = 1;
+            for(size_t i = 0; i < problem.batchIndices().size(); ++i)
+            {
+                batch *= problem.batchSize(i);
+            }
             // More tiles than CUs
             // Distribute tiles evenly across maximum number of CUs
             // Split remaining tiles as evenly as possible for better caching
@@ -3156,20 +3161,28 @@ namespace TensileLite
                 size_t virtCUCount = cuCount;
                 if (sizeMapping.CUOccupancy > 1)
                     virtCUCount *= sizeMapping.CUOccupancy;
-                // const std::vector<double> tileFractions = {0.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0, 1.0/2.0, 1.0};
-                // const std::vector<double> tileFractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0, 1.0};
-                const std::vector<double> tileFractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0};
-                size_t minEvenTiles = tiles / virtCUCount;
-                for(double frac: tileFractions)
+                if (batch > 1)
                 {
-                    size_t fracGrid = (size_t)((tiles / (minEvenTiles + frac)) + 0.5);
-                    // Check if higher occupancy would cause excessive workspace requirements (set current limit to 128MB)
-                    if((tiles % fracGrid != 0) && (partialTileSize(fracGrid) > 128*1024*1024))
-                        continue;
-                    if(fracGrid <= virtCUCount)
+                    // Temporary hack: make large batch run DP for now
+                    skGrid = tiles;
+                }
+                else
+                {
+                    // const std::vector<double> tileFractions = {0.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0, 1.0/2.0, 1.0};
+                    // const std::vector<double> tileFractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0, 1.0};
+                    const std::vector<double> tileFractions = {0.0, 1.0/2.0, 1.0/8.0, 1.0/5.0, 1.0/4.0, 1.0/3.0};
+                    size_t minEvenTiles = tiles / virtCUCount;
+                    for(double frac: tileFractions)
                     {
-                        skGrid = fracGrid;
-                        break;
+                        size_t fracGrid = (size_t)((tiles / (minEvenTiles + frac)) + 0.5);
+                        // Check if higher occupancy would cause excessive workspace requirements (set current limit to 128MB)
+                        if((tiles % fracGrid != 0) && (partialTileSize(fracGrid) > 128*1024*1024))
+                            continue;
+                        if(fracGrid <= virtCUCount)
+                        {
+                            skGrid = fracGrid;
+                            break;
+                        }
                     }
                 }
             }
