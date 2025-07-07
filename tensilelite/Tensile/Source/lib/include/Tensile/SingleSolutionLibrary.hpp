@@ -76,6 +76,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "SingleSolutionLibrary: getSolutionByIndex" << std::endl;
             if(solution && solution->index == index)
             {
                 return solution;
@@ -88,6 +90,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "SingleSolutionLibrary: findBestSolution" << std::endl;
             bool debug = Debug::Instance().printPredicateEvaluation();
 
             if(solution)
@@ -121,6 +125,8 @@ namespace TensileLite
                                                              double*                       fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "SingleSolutionLibrary: findBestSolution" << std::endl;
             bool debug = Debug::Instance().printPredicateEvaluation();
 
             if(solution)
@@ -174,6 +180,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "SingleSolutionLibrary: findAllSolutions" << std::endl;
             bool debug = Debug::Instance().printPredicateEvaluation();
 
             bool useSolution = false;
@@ -219,6 +227,8 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "SingleSolutionLibrary: findAllSolutionsGroupedGemm" << std::endl;
             bool debug = Debug::Instance().printPredicateEvaluation();
 
             bool useSolution = false;

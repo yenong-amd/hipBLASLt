@@ -108,6 +108,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MapLibrary: getSolutionByIndex" << std::endl;
             auto library = lookup(problem, hardware);
 
             if(library == nullptr)
@@ -121,6 +123,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MapLibrary: findBestSolution" << std::endl;
             auto library = lookup(problem, hardware);
 
             if(library == nullptr)
@@ -135,6 +139,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MapLibrary: findAllSolutions" << std::endl;
             if(searchType == SolutionLibrarySearchType::HARDWARE_ONLY)
             {
                 auto result = SolutionSet<MySolution>();
@@ -162,6 +168,8 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MapLibrary: findAllSolutionsGroupedGemm" << std::endl;
             if(searchType == SolutionLibrarySearchType::HARDWARE_ONLY)
             {
                 auto result = SolutionSet<MySolution>();
@@ -191,6 +199,8 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MapLibrary: findTopSolutions" << std::endl;
             auto library = lookup(problem, hardware);
 
             if(library == nullptr)
@@ -204,6 +214,8 @@ namespace TensileLite
                                         Hardware const&               hardware,
                                         int                           numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MapLibrary: findTopSolutionsGroupedGemm" << std::endl;
             auto library = lookup(problems[0], hardware);
 
             if(library == nullptr)

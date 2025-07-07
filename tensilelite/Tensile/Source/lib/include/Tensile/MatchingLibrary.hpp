@@ -68,6 +68,8 @@ namespace TensileLite
                                                                Hardware const&  hardware,
                                                                const int index) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MatchingLibrary: getSolutionByIndex" << std::endl;
             typename Table::Transform transform
                 = [&](Element library) -> std::shared_ptr<MySolution> {
                 return library->getSolutionByIndex(problem, hardware, index);
@@ -83,6 +85,8 @@ namespace TensileLite
                                                              double*          fitness
                                                              = nullptr) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MatchingLibrary: findBestSolution" << std::endl;
             bool useDebugSelection = Debug::Instance().enableDebugSelection();
 
             typename Table::Transform transform
@@ -112,6 +116,8 @@ namespace TensileLite
                              SolutionLibrarySearchType searchType
                              = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MatchingLibrary: findAllSolutions" << std::endl;
             bool debug = Debug::Instance().printPropertyEvaluation();
 
             SolutionSet<MySolution> rv;
@@ -141,6 +147,8 @@ namespace TensileLite
                                         SolutionLibrarySearchType     searchType
                                         = SolutionLibrarySearchType::DEFAULT) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MatchingLibrary: findAllSolutionsGroupedGemm" << std::endl;
             bool debug = Debug::Instance().printPropertyEvaluation();
 
             SolutionSet<MySolution> rv;
@@ -169,6 +177,8 @@ namespace TensileLite
                                                             Hardware const&  hardware,
                                                             int numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MatchingLibrary: findTopSolutions" << std::endl;
             typename Table::Transform transform
                 = [&](Element library) -> std::shared_ptr<MySolution> {
                 return library->findBestSolution(problem, hardware);
@@ -195,6 +205,8 @@ namespace TensileLite
                                         Hardware const&               hardware,
                                         int                           numSolutions) const override
         {
+            if(Debug::Instance().printLibraryVersion())
+                std::cout << "MatchingLibrary: findTopSolutionsGroupedGemm" << std::endl;
             typename Table::Transform transform
                 = [&](Element library) -> std::shared_ptr<MySolution> {
                 return library->findBestSolution(problems, hardware);
